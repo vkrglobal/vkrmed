@@ -1,1 +1,1 @@
-{"routes":[{"src":"/api/anthropic","dest":"/api/anthropic.js"},{"src":"/((?!api).*)","dest":"/index.html"}],"headers":[{"source":"/(.*)","headers":[{"key":"X-Frame-Options","value":"ALLOWALL"},{"key":"Content-Security-Policy","value":"frame-ancestors *;"}]}]}
+{"framework":null,"buildCommand":null,"outputDirectory":".","installCommand":null,"headers":[{"source":"/(.*)","headers":[{"key":"X-Frame-Options","value":"ALLOWALL"},{"key":"Content-Security-Policy","value":"frame-ancestors *;"}]}]}
