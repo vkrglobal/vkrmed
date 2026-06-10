@@ -1,0 +1,3559 @@
+<!DOCTYPE html>
+<!--
+  ═══════════════════════════════════════════════════════════════
+  VKRMed — VKR Global Health Intelligence Demo
+  Version 1.0 | vkrglobal.net
+  ═══════════════════════════════════════════════════════════════
+
+  GOOGLE SITES EMBED INSTRUCTIONS:
+  ─────────────────────────────────
+  1. Deploy this file to Netlify:
+     a. Go to netlify.com → drag this file onto the deploy area
+     b. Note your Netlify URL (e.g. https://vkrmed.netlify.app)
+
+  2. In Google Sites:
+     a. Edit your page → Insert → Embed
+     b. Paste your Netlify URL
+     c. Recommended iframe dimensions: width 100%, height 900px
+     d. Publish the site
+
+  ALTERNATIVELY — embed as raw HTML:
+     Google Sites → Insert → Embed → Embed code tab
+     Paste the full contents of this file
+     (Note: Google Sites HTML embeds have some CSP restrictions;
+      hosting on Netlify is the recommended approach)
+
+  REQUIREMENTS:
+  ─────────────
+  • Anthropic API key must be in Claude.ai context (handled automatically
+    when embedded via the Claude artifact API proxy)
+  • For production deployment outside Claude.ai, add your API key to a
+    server-side proxy — never expose it client-side in production
+
+  ═══════════════════════════════════════════════════════════════
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VKRMed — VKR Global</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+/* ── TOKENS ── */
+:root {
+  --navy: #0B1F3A;
+  --navy-mid: #122847;
+  --navy-light: #1A3A5C;
+  --teal: #0D7A6B;
+  --teal-light: #0F9B89;
+  --teal-pale: #E4F4F2;
+  --gold: #C9A84C;
+  --gold-pale: #FBF5E6;
+  --gold-mid: #E8C96A;
+  --white: #FFFFFF;
+  --off-white: #F8F9FA;
+  --slate: #F1F4F7;
+  --text-primary: #0B1F3A;
+  --text-secondary: #4A5568;
+  --text-muted: #718096;
+  --border: #E2E8F0;
+  --border-strong: #CBD5E0;
+  --danger: #C0392B;
+  --danger-pale: #FEF2F2;
+  --warn: #92610A;
+  --warn-pale: #FFFBEB;
+  --success: #166534;
+  --success-pale: #F0FDF4;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --shadow-sm: 0 1px 3px rgba(11,31,58,.08), 0 1px 2px rgba(11,31,58,.04);
+  --shadow-md: 0 4px 12px rgba(11,31,58,.10), 0 2px 4px rgba(11,31,58,.06);
+  --shadow-lg: 0 12px 32px rgba(11,31,58,.14), 0 4px 8px rgba(11,31,58,.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--off-white);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ── */
+.site-header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, var(--teal) 100%);
+  padding: 18px 28px 0;
+  position: relative;
+  overflow: hidden;
+}
+.site-header::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: rgba(13,122,107,.15);
+  pointer-events: none;
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-mark {
+  width: 36px; height: 36px;
+  background: var(--gold);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 500;
+  color: var(--navy);
+  letter-spacing: -.5px;
+  flex-shrink: 0;
+}
+.brand-text { line-height: 1.1; }
+.brand-name {
+  font-size: 14px; font-weight: 600;
+  color: var(--white);
+  letter-spacing: .02em;
+}
+.brand-sub {
+  font-size: 10px; font-weight: 400;
+  color: rgba(255,255,255,.55);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.header-badge {
+  font-size: 10px; font-weight: 500;
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,.4);
+  border-radius: 20px;
+  padding: 3px 10px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.product-hero {
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.product-eyebrow {
+  font-size: 10px; font-weight: 600;
+  color: var(--gold);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.product-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px; font-weight: 400;
+  color: var(--white);
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.product-name span { color: var(--gold-mid); font-style: italic; }
+.product-desc {
+  font-size: 13px; font-weight: 300;
+  color: rgba(255,255,255,.7);
+  line-height: 1.6;
+  max-width: 520px;
+}
+.gold-rule {
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-mid) 40%, transparent 100%);
+  width: 60px;
+  border-radius: 1px;
+  margin: 12px 0;
+}
+
+.persona-tabs {
+  display: flex;
+  gap: 2px;
+  padding-top: 16px;
+}
+.ptab {
+  padding: 9px 16px;
+  font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,.55);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all .2s;
+  background: none; border-top: none; border-left: none; border-right: none;
+  letter-spacing: .01em;
+  white-space: nowrap;
+}
+.ptab:hover { color: rgba(255,255,255,.8); }
+.ptab.active { color: var(--white); border-bottom-color: var(--gold); }
+
+/* ── MAIN CONTENT ── */
+.main { padding: 24px 28px; max-width: 760px; }
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* Step indicator */
+.step-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+.step-node {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  flex-shrink: 0;
+  transition: all .2s;
+}
+.step-node.done { background: var(--teal); color: var(--white); }
+.step-node.active { background: var(--navy); color: var(--white); box-shadow: 0 0 0 3px rgba(13,122,107,.2); }
+.step-node.idle { background: var(--border); color: var(--text-muted); }
+.step-connector { flex: 1; height: 1px; background: var(--border); }
+.step-connector.done { background: var(--teal); }
+.step-label { font-size: 12px; color: var(--text-muted); margin-left: 4px; }
+
+/* Geo grid */
+.geo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.g-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 13px; font-weight: 400;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all .15s;
+  text-align: left;
+}
+.g-btn:hover { border-color: var(--teal); background: var(--teal-pale); }
+.g-btn.sel { border-color: var(--teal); background: var(--teal-pale); color: var(--teal); font-weight: 500; }
+.g-flag { font-size: 18px; line-height: 1; }
+
+/* Profile row */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.field-group label {
+  display: block;
+  font-size: 11px; font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.field-group input,
+.field-group select {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  color: var(--text-primary);
+  transition: border-color .15s;
+}
+.field-group input:focus, .field-group select:focus {
+  outline: none; border-color: var(--teal);
+}
+
+/* Symptom grid */
+.sym-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 7px;
+  margin-bottom: 14px;
+}
+.sym-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 11px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: all .15s;
+}
+.sym-btn i { font-size: 15px; color: var(--text-muted); transition: color .15s; }
+.sym-btn:hover { border-color: var(--teal); background: var(--teal-pale); }
+.sym-btn:hover i { color: var(--teal); }
+.sym-btn.sel { border-color: var(--teal); background: var(--teal-pale); color: var(--teal); font-weight: 500; }
+.sym-btn.sel i { color: var(--teal); }
+
+textarea.desc-input {
+  width: 100%;
+  padding: 10px 13px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  color: var(--text-primary);
+  resize: vertical;
+  line-height: 1.5;
+}
+textarea.desc-input:focus { outline: none; border-color: var(--teal); }
+textarea.desc-input::placeholder { color: var(--text-muted); }
+
+/* Buttons */
+.btn-primary {
+  background: var(--teal);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 22px;
+  font-size: 13px; font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  letter-spacing: .01em;
+}
+.btn-primary:hover { background: var(--teal-light); }
+.btn-primary:active { transform: scale(.98); }
+.btn-primary:disabled { background: var(--border-strong); cursor: not-allowed; }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-secondary:hover { background: var(--slate); color: var(--text-primary); }
+
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 18px; }
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--navy);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 22px;
+  font-size: 13px; font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all .15s;
+  letter-spacing: .01em;
+}
+.btn-gold:hover { background: var(--gold-mid); }
+
+/* Section labels */
+.sec-lbl {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.sec-lbl.gold { color: var(--gold); }
+
+h3.screen-title {
+  font-size: 17px; font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+p.screen-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+/* Chips */
+.chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+.chip {
+  font-size: 11px; font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+.chip.persona { background: rgba(13,122,107,.1); color: var(--teal); }
+.chip.geo { background: var(--gold-pale); color: #7A5D1A; }
+.chip.sym { background: var(--slate); color: var(--text-secondary); }
+.chip.profile { background: rgba(11,31,58,.07); color: var(--navy); }
+
+/* Progress bar */
+.prog-wrap {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--teal-light));
+  border-radius: 2px;
+  transition: width .35s ease;
+}
+
+/* Q card */
+.q-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 12px;
+}
+.q-num { font-size: 11px; color: var(--text-muted); margin-bottom: 7px; font-weight: 500; }
+.q-text { font-size: 15px; font-weight: 500; margin-bottom: 14px; line-height: 1.4; color: var(--text-primary); }
+.q-opts { display: flex; flex-direction: column; gap: 6px; }
+.q-opt {
+  padding: 9px 14px;
+  background: var(--off-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary);
+  transition: all .15s;
+}
+.q-opt:hover { border-color: var(--teal); background: var(--teal-pale); color: var(--teal); }
+.q-opt.answered { border-color: var(--teal); background: var(--teal-pale); color: var(--teal); font-weight: 500; }
+
+/* Loading */
+.loading-wrap { padding: 28px 0; }
+.loading-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
+.progress-anim {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  width: 200px;
+}
+.progress-anim-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--gold));
+  border-radius: 2px;
+  animation: progslide 1.6s ease-in-out infinite;
+}
+@keyframes progslide { 0%{transform:translateX(-100%)} 100%{transform:translateX(300%)} }
+@keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+.load-step { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-muted); opacity:0; animation:fadeStep .4s ease forwards; }
+.load-step i { font-size:14px; }
+.load-step.done { color:var(--teal); }
+@keyframes fadeStep { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:translateX(0)} }
+
+/* Urgency banner */
+.urgency-banner {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 15px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.urgency-banner i { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+.urgency-banner.red { background: var(--danger-pale); color: var(--danger); border: 1px solid #FECACA; }
+.urgency-banner.amber { background: var(--warn-pale); color: var(--warn); border: 1px solid #FDE68A; }
+.urgency-banner.green { background: var(--success-pale); color: var(--success); border: 1px solid #BBF7D0; }
+
+/* Result cards */
+.result-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 10px;
+}
+.result-card:hover { box-shadow: var(--shadow-md); transition: box-shadow .2s; }
+.rc-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.rc-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.rc-icon.info { background: #EFF6FF; color: #1D4ED8; }
+.rc-icon.warn { background: var(--warn-pale); color: var(--warn); }
+.rc-icon.danger { background: var(--danger-pale); color: var(--danger); }
+.rc-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.rc-likelihood { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.icd-badge {
+  display: inline-block;
+  font-size: 10px; font-weight: 600;
+  background: rgba(11,31,58,.07);
+  color: var(--navy);
+  padding: 2px 6px; border-radius: 4px;
+  margin-left: 6px; vertical-align: middle;
+}
+.rc-body {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 10px;
+}
+.tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.tag { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+.tag.g { background: var(--success-pale); color: var(--success); }
+.tag.a { background: var(--warn-pale); color: var(--warn); }
+.tag.r { background: var(--danger-pale); color: var(--danger); }
+.ref-line {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  line-height: 1.4;
+}
+.pubmed-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 6px;
+  font-size: 11px; font-weight: 500;
+  color: var(--teal);
+  background: var(--teal-pale);
+  border: 1px solid rgba(13,122,107,.2);
+  border-radius: 20px;
+  padding: 3px 10px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .15s;
+}
+.pubmed-link:hover { background: var(--teal); color: var(--white); }
+
+/* Advice box */
+.advice-box {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin: 14px 0;
+}
+.advice-box .advice-label {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.advice-box .advice-text {
+  font-size: 13px;
+  color: rgba(255,255,255,.85);
+  line-height: 1.65;
+}
+
+/* Research panel */
+.research-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 14px 0;
+}
+.rp-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(90deg, var(--navy) 0%, var(--navy-mid) 100%);
+}
+.rp-header-title { font-size: 13px; font-weight: 500; color: var(--white); }
+.rp-header-sub { font-size: 11px; color: rgba(255,255,255,.5); margin-left: auto; }
+.rp-body { padding: 14px 16px; background: var(--white); }
+.research-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.research-item:last-of-type { border-bottom: none; }
+.ri-icon {
+  width: 28px; height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0; margin-top: 1px;
+}
+.ri-icon.pm { background: #EFF6FF; color: #1D4ED8; }
+.ri-icon.mx { background: #F5F3FF; color: #6D28D9; }
+.ri-icon.cr { background: var(--success-pale); color: var(--success); }
+.ri-title {
+  font-size: 13px; font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+  cursor: pointer;
+  transition: color .15s;
+}
+.ri-title:hover { color: var(--teal); }
+.ri-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; margin-bottom: 6px; }
+.ri-links { display: flex; flex-wrap: wrap; gap: 5px; }
+.ri-link {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 500;
+  padding: 3px 9px; border-radius: 20px;
+  cursor: pointer;
+  transition: all .15s;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  background: var(--off-white);
+}
+.ri-link:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-pale); }
+
+.contribute-strip {
+  background: var(--gold-pale);
+  border: 1px solid rgba(201,168,76,.25);
+  border-radius: var(--radius-md);
+  padding: 11px 14px;
+  font-size: 12px;
+  color: #7A5D1A;
+  line-height: 1.55;
+  margin-top: 10px;
+}
+.contribute-strip strong { font-weight: 600; }
+.contribute-strip a { color: var(--teal); text-decoration: none; font-weight: 500; }
+.contribute-strip a:hover { text-decoration: underline; }
+
+/* Resources */
+.resource-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-top: 8px;
+}
+.res-card {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 12px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all .15s;
+}
+.res-card:hover { border-color: var(--teal); background: var(--teal-pale); }
+.res-card i { font-size: 16px; color: var(--text-muted); flex-shrink: 0; }
+.res-card:hover i { color: var(--teal); }
+.res-name { font-size: 12px; font-weight: 500; color: var(--text-primary); }
+.res-desc { font-size: 11px; color: var(--text-muted); }
+.res-arrow { margin-left: auto; font-size: 13px; color: var(--text-muted); }
+
+/* Export row */
+.export-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+.exp-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 13px;
+  font-size: 12px; font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all .15s;
+}
+.exp-btn:hover { background: var(--slate); color: var(--text-primary); }
+.exp-btn i { font-size: 14px; }
+
+/* Disclaimer */
+.disclaimer {
+  background: var(--warn-pale);
+  border: 1px solid #FDE68A;
+  border-radius: var(--radius-md);
+  padding: 10px 13px;
+  font-size: 12px;
+  color: var(--warn);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+.disclaimer strong { font-weight: 600; }
+
+.disclaimer-sm {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+/* Emergency overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+.overlay-modal {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  max-width: 380px;
+  width: 100%;
+  border-top: 4px solid var(--danger);
+  box-shadow: var(--shadow-lg);
+}
+.overlay-title {
+  font-size: 18px; font-weight: 600;
+  color: var(--danger);
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px;
+}
+.overlay-body { font-size: 14px; line-height: 1.6; color: var(--text-primary); margin-bottom: 16px; }
+.overlay-number { font-size: 32px; font-weight: 700; color: var(--danger); margin: 8px 0; line-height: 1; }
+.overlay-primary { width: 100%; padding: 12px; background: var(--danger); color: var(--white); border: none; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; margin-bottom: 8px; transition: opacity .15s; }
+.overlay-primary:hover { opacity: .9; }
+.overlay-dismiss { width: 100%; padding: 10px; background: transparent; color: var(--text-muted); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 13px; font-family: 'Inter', sans-serif; cursor: pointer; transition: all .15s; }
+.overlay-dismiss:hover { background: var(--slate); }
+
+/* Footer */
+.site-footer {
+  background: var(--navy);
+  padding: 14px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px;
+}
+.footer-brand { font-size: 11px; color: rgba(255,255,255,.4); }
+.footer-brand strong { color: rgba(255,255,255,.6); }
+.footer-link { font-size: 11px; color: var(--gold); text-decoration: none; opacity: .8; transition: opacity .15s; }
+.footer-link:hover { opacity: 1; }
+
+/* Divider */
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+/* Responsive */
+@media (max-width: 520px) {
+  .site-header { padding: 14px 16px 0; }
+  .main { padding: 16px; }
+  .persona-grid-outer { grid-template-columns: 1fr; }
+  .profile-grid { grid-template-columns: 1fr 1fr; }
+  .resource-grid { grid-template-columns: 1fr; }
+  .product-name { font-size: 22px; }
+  .persona-tabs { overflow-x: auto; }
+  .ptab { font-size: 11px; padding: 8px 12px; }
+}
+
+/* Persona cards on S1 */
+.persona-grid-outer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.persona-card-outer {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: all .15s;
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+.persona-card-outer:hover { border-color: var(--teal); background: var(--teal-pale); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.persona-card-outer.sel { border: 2px solid var(--teal); background: var(--teal-pale); }
+.persona-card-outer i { font-size: 26px; display: block; margin-bottom: 8px; color: var(--text-muted); }
+.persona-card-outer.sel i { color: var(--teal); }
+.pco-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.pco-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+.persona-card-outer.sel .pco-title { color: var(--teal); }
+
+@media (max-width: 420px) {
+  .persona-grid-outer { grid-template-columns: 1fr; }
+}
+
+/* ── ACADEMIC PANEL (in S5) ── */
+.acad-entry-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 14px 0;
+}
+.aep-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  background: linear-gradient(90deg, var(--navy) 0%, var(--navy-mid) 100%);
+  cursor: pointer;
+}
+.aep-header-left { display: flex; align-items: center; gap: 9px; }
+.aep-header-title { font-size: 13px; font-weight: 500; color: var(--white); }
+.aep-header-sub { font-size: 11px; color: rgba(255,255,255,.45); }
+.aep-badges { display: flex; gap: 5px; }
+.aep-badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; background: rgba(201,168,76,.15); color: var(--gold); border: 1px solid rgba(201,168,76,.25); }
+.aep-body { padding: 14px 16px; background: var(--white); display: flex; gap: 10px; flex-wrap: wrap; }
+.aep-mode-btn {
+  flex: 1; min-width: 180px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--off-white);
+  cursor: pointer; text-align: left;
+  transition: all .15s;
+}
+.aep-mode-btn:hover { border-color: var(--teal); background: var(--teal-pale); }
+.aep-mode-icon { width: 32px; height: 32px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.aep-mode-icon.quiz { background: #EFF6FF; color: #1D4ED8; }
+.aep-mode-icon.exam { background: var(--teal-pale); color: var(--teal); }
+.aep-mode-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.aep-mode-desc { font-size: 11px; color: var(--text-muted); line-height: 1.3; }
+
+/* ── ACADEMIC HUB (S6) ── */
+.acad-mode-card {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  cursor: pointer;
+  transition: all .15s;
+  background: var(--white);
+}
+.acad-mode-card:hover { border-color: var(--teal); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.acad-mode-card.sel { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(13,122,107,.12); }
+#track-school.sel { border-color: #7C3AED; box-shadow: 0 0 0 3px rgba(124,58,237,.12); }
+#track-school.sel .amc-title { color: #7C3AED; }
+.amc-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; margin-bottom: 10px; }
+.amc-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.amc-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 10px; }
+.amc-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.amc-tag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; background: var(--slate); color: var(--text-muted); }
+
+.board-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-md); cursor: pointer;
+  text-align: left; transition: all .15s; width: 100%;
+}
+.board-btn:hover { border-color: var(--teal); background: var(--teal-pale); }
+.board-btn.sel { border-color: var(--teal); background: var(--teal-pale); }
+.board-flag { font-size: 20px; line-height: 1; flex-shrink: 0; }
+.bb-name { font-size: 13px; font-weight: 500; }
+.bb-sub { font-size: 11px; color: var(--text-muted); }
+
+.level-btn {
+  padding: 7px 14px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 20px; font-size: 12px; font-weight: 500;
+  font-family: 'Inter', sans-serif; cursor: pointer; transition: all .15s;
+  color: var(--text-secondary);
+}
+.level-btn:hover { border-color: var(--teal); color: var(--teal); background: var(--teal-pale); }
+.level-btn.sel { border-color: var(--teal); background: var(--teal-pale); color: var(--teal); }
+
+/* ── QUIZ (S7) ── */
+.score-badge {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--slate); border-radius: 20px;
+  padding: 4px 10px; font-size: 12px; font-weight: 600;
+}
+.quiz-q-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px 20px;
+  box-shadow: var(--shadow-sm); margin-bottom: 12px;
+}
+.quiz-q-text { font-size: 15px; font-weight: 500; margin-bottom: 14px; line-height: 1.45; }
+.quiz-opts { display: flex; flex-direction: column; gap: 7px; }
+.quiz-opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: var(--off-white); border: 1px solid var(--border);
+  border-radius: var(--radius-md); cursor: pointer;
+  font-size: 13px; font-family: 'Inter', sans-serif;
+  text-align: left; transition: all .15s; color: var(--text-primary);
+}
+.quiz-opt:hover:not([disabled]) { border-color: var(--teal); background: var(--teal-pale); }
+.quiz-opt.correct { border-color: #16A34A; background: #F0FDF4; color: #166534; font-weight: 500; }
+.quiz-opt.wrong { border-color: #DC2626; background: #FEF2F2; color: #991B1B; }
+.quiz-opt.reveal { border-color: #16A34A; background: #F0FDF4; color: #166534; }
+.quiz-opt-letter {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--slate); color: var(--text-secondary);
+  font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all .15s;
+}
+.quiz-opt.correct .quiz-opt-letter { background: #16A34A; color: white; }
+.quiz-opt.wrong .quiz-opt-letter { background: #DC2626; color: white; }
+.quiz-feedback-box {
+  border-radius: var(--radius-md); padding: 13px 16px;
+  font-size: 13px; line-height: 1.6; margin-bottom: 12px;
+}
+.quiz-feedback-box.correct { background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; }
+.quiz-feedback-box.wrong { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; }
+.quiz-results-card {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  border-radius: var(--radius-lg); padding: 24px;
+  text-align: center; color: white; margin-bottom: 14px;
+}
+.qrc-score { font-size: 52px; font-weight: 700; color: var(--gold); line-height: 1; }
+.qrc-label { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 4px; }
+.qrc-grade { font-size: 20px; font-weight: 600; margin-top: 10px; }
+.qrc-breakdown { display: flex; justify-content: center; gap: 20px; margin-top: 14px; }
+.qrc-stat { text-align: center; }
+.qrc-stat-num { font-size: 20px; font-weight: 600; }
+.qrc-stat-lbl { font-size: 11px; color: rgba(255,255,255,.5); }
+
+/* ── EXAM (S8) ── */
+.exam-q-block {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px 20px;
+  margin-bottom: 14px; box-shadow: var(--shadow-sm);
+}
+.eq-num { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+.eq-stem { font-size: 14px; font-weight: 500; line-height: 1.5; margin-bottom: 6px; }
+.eq-marks { font-size: 11px; color: var(--teal); font-weight: 600; margin-bottom: 10px; }
+.eq-input {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--border); border-radius: var(--radius-md);
+  font-size: 13px; font-family: 'Inter', sans-serif;
+  color: var(--text-primary); background: var(--off-white);
+  resize: vertical; line-height: 1.5;
+}
+.eq-input:focus { outline: none; border-color: var(--teal); background: var(--white); }
+.eq-guidance { font-size: 11px; color: var(--text-muted); margin-top: 5px; font-style: italic; }
+
+/* ── MARKING (S9) ── */
+.mark-summary {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  border-radius: var(--radius-lg); padding: 16px 20px; margin-bottom: 16px;
+  align-items: center;
+}
+.ms-score-block { text-align: center; }
+.ms-total { font-size: 36px; font-weight: 700; color: var(--gold); line-height: 1; }
+.ms-outof { font-size: 13px; color: rgba(255,255,255,.5); }
+.ms-divider { width: 1px; background: rgba(255,255,255,.15); align-self: stretch; margin: 0 4px; }
+.ms-stats { display: flex; flex-wrap: wrap; gap: 12px; flex: 1; }
+.ms-stat { }
+.ms-stat-num { font-size: 18px; font-weight: 600; color: white; }
+.ms-stat-lbl { font-size: 11px; color: rgba(255,255,255,.45); }
+
+.mark-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px 18px;
+  margin-bottom: 12px; box-shadow: var(--shadow-sm);
+}
+.mark-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.mark-q-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+.mark-q-text { font-size: 13px; font-weight: 500; margin-top: 2px; line-height: 1.4; }
+.mark-score-pill {
+  font-size: 12px; font-weight: 700;
+  padding: 3px 11px; border-radius: 20px; flex-shrink: 0;
+  white-space: nowrap;
+}
+.mark-score-pill.full { background: #F0FDF4; color: #166534; }
+.mark-score-pill.partial { background: var(--warn-pale); color: var(--warn); }
+.mark-score-pill.zero { background: #FEF2F2; color: #991B1B; }
+
+.mark-section { margin-bottom: 10px; }
+.mark-section-lbl { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+.mark-student-ans { font-size: 13px; color: var(--text-secondary); background: var(--slate); border-radius: var(--radius-sm); padding: 8px 11px; line-height: 1.5; }
+.mark-scheme { font-size: 13px; color: #166534; background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: var(--radius-sm); padding: 8px 11px; line-height: 1.5; }
+.mark-feedback { font-size: 13px; color: var(--text-primary); line-height: 1.6; }
+.mark-feedback strong { color: var(--navy); }
+
+.mark-overall-advice {
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  border-radius: var(--radius-lg); padding: 16px 18px; margin-top: 14px;
+}
+.moa-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+.moa-text { font-size: 13px; color: rgba(255,255,255,.85); line-height: 1.65; }
+
+/* ── DRUG COMPARISON ── */
+.drug-entry-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 14px 0;
+}
+.dep-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  background: linear-gradient(90deg, var(--navy), var(--navy-mid));
+  cursor: pointer;
+}
+.dep-header-left { display: flex; align-items: center; gap: 9px; }
+.dep-header-title { font-size: 13px; font-weight: 500; color: var(--white); }
+.dep-badges { display: flex; gap: 5px; }
+.dep-badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px;
+  background: rgba(201,168,76,.15); color: var(--gold); border: 1px solid rgba(201,168,76,.25); }
+.dep-body { padding: 12px 16px; background: var(--white);
+  display: flex; gap: 10px; flex-wrap: wrap; }
+.dep-drug-chip { display: flex; align-items: center; gap: 7px;
+  padding: 7px 12px; border: 1px solid var(--border); border-radius: var(--radius-md);
+  background: var(--off-white); cursor: pointer; font-size: 12px; font-weight: 500;
+  color: var(--text-secondary); transition: all .15s; }
+.dep-drug-chip:hover { border-color: var(--teal); background: var(--teal-pale); color: var(--teal); }
+.dep-drug-chip i { font-size: 14px; }
+
+/* Sort / filter buttons */
+.dc-sort-btn, .dc-filter-btn {
+  padding: 5px 12px; font-size: 11px; font-weight: 500;
+  border: 1px solid var(--border); border-radius: 20px;
+  background: var(--white); color: var(--text-secondary);
+  cursor: pointer; font-family: var(--font-sans); transition: all .15s;
+}
+.dc-sort-btn:hover, .dc-filter-btn:hover { border-color: var(--teal); color: var(--teal); }
+.dc-sort-btn.active { background: var(--teal); color: var(--white); border-color: var(--teal); }
+.dc-filter-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+
+/* Drug cards */
+.dc-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 0;
+  margin-bottom: 12px; box-shadow: var(--shadow-sm);
+  overflow: hidden; transition: box-shadow .2s;
+}
+.dc-card:hover { box-shadow: var(--shadow-md); }
+.dc-card-header {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px 10px; border-bottom: 1px solid var(--border);
+}
+.dc-drug-icon {
+  width: 38px; height: 38px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.dc-drug-icon.branded { background: #EFF6FF; color: #1D4ED8; }
+.dc-drug-icon.generic  { background: var(--teal-pale); color: var(--teal); }
+.dc-drug-icon.otc      { background: var(--gold-pale); color: #7A5D1A; }
+.dc-drug-name { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.dc-drug-generic { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+.dc-type-badge { display: inline-block; font-size: 10px; font-weight: 600;
+  padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: .04em; }
+.dc-type-badge.branded { background: #EFF6FF; color: #1D4ED8; }
+.dc-type-badge.generic  { background: var(--teal-pale); color: var(--teal); }
+.dc-type-badge.otc      { background: var(--gold-pale); color: #7A5D1A; }
+
+/* Score bar */
+.dc-score-col { text-align: center; flex-shrink: 0; min-width: 58px; }
+.dc-overall-score { font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1; }
+.dc-score-label { font-size: 10px; color: var(--text-muted); }
+
+/* Metrics grid */
+.dc-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+  border-bottom: 1px solid var(--border); }
+.dc-metric { padding: 10px 14px; border-right: 1px solid var(--border); }
+.dc-metric:last-child { border-right: none; }
+.dc-metric-label { font-size: 10px; font-weight: 600; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+.dc-metric-value { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.dc-metric-sub { font-size: 11px; color: var(--text-muted); }
+.dc-bar-wrap { height: 5px; background: var(--border); border-radius: 3px; margin-top: 5px; overflow: hidden; }
+.dc-bar { height: 100%; border-radius: 3px; }
+
+/* Stars */
+.dc-stars { color: var(--gold); font-size: 14px; letter-spacing: -1px; }
+.dc-star-count { font-size: 11px; color: var(--text-muted); }
+
+/* Evidence badge */
+.dc-evidence { display: inline-block; font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px; }
+.dc-evidence.A { background: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; }
+.dc-evidence.B { background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE; }
+.dc-evidence.C { background: var(--warn-pale); color: var(--warn); border: 1px solid #FDE68A; }
+
+/* Body of card */
+.dc-card-body { padding: 12px 16px; }
+.dc-pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+.dc-pro-con-col { font-size: 12px; }
+.dc-pro-con-label { font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .05em; margin-bottom: 4px; }
+.dc-pro-con-label.pros { color: #166534; }
+.dc-pro-con-label.cons { color: #991B1B; }
+.dc-pro-item { color: var(--text-secondary); padding: 2px 0; display: flex; gap: 5px; }
+.dc-pro-item::before { content: '✓'; color: #16A34A; font-weight: 700; flex-shrink: 0; }
+.dc-con-item { color: var(--text-secondary); padding: 2px 0; display: flex; gap: 5px; }
+.dc-con-item::before { content: '✗'; color: #DC2626; font-weight: 700; flex-shrink: 0; }
+
+/* User reviews strip */
+.dc-reviews { padding: 10px 16px; background: var(--off-white);
+  border-top: 1px solid var(--border); display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.dc-review-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.dc-review-tag { font-size: 11px; padding: 2px 8px; border-radius: 20px;
+  background: var(--white); border: 1px solid var(--border); color: var(--text-secondary); }
+.dc-rate-btn { font-size: 11px; font-weight: 500; padding: 5px 12px;
+  border: 1px solid var(--teal); border-radius: 20px; color: var(--teal);
+  background: transparent; cursor: pointer; transition: all .15s; font-family: var(--font-sans); }
+.dc-rate-btn:hover { background: var(--teal); color: var(--white); }
+
+/* Feedback stars */
+.dc-star { font-size: 24px; color: var(--border-strong, #CBD5E0);
+  background: none; border: none; cursor: pointer; padding: 0 2px; transition: color .1s; }
+.dc-star.active, .dc-star:hover { color: var(--gold); }
+.dc-exp-tag { font-size: 11px; padding: 4px 10px; border: 1px solid var(--border);
+  border-radius: 20px; background: var(--white); color: var(--text-secondary);
+  cursor: pointer; font-family: var(--font-sans); transition: all .15s; }
+.dc-exp-tag.active { background: var(--teal-pale); border-color: var(--teal); color: var(--teal); font-weight: 500; }
+
+/* Compare winner banner */
+.dc-winner-banner { background: linear-gradient(90deg, var(--navy), var(--navy-mid));
+  border-radius: var(--radius-md); padding: 10px 14px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--white); }
+.dc-winner-banner i { color: var(--gold); font-size: 18px; flex-shrink: 0; }
+
+/* ── VOICE MODULE ── */
+.voice-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  background: linear-gradient(90deg, var(--navy), var(--navy-mid));
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  flex-wrap: wrap;
+}
+.voice-bar-label { font-size: 11px; color: rgba(255,255,255,.5); letter-spacing:.04em; text-transform:uppercase; font-weight:500; flex-shrink:0; }
+.vb-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  font-family: var(--font-sans); cursor: pointer; transition: all .15s; border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06); color: rgba(255,255,255,.7);
+}
+.vb-btn:hover { background: rgba(255,255,255,.14); color: var(--white); }
+.vb-btn.active { background: var(--teal); border-color: var(--teal); color: var(--white); }
+.vb-btn.recording { background: var(--danger); border-color: var(--danger); color: var(--white); animation: pulse-btn 1.2s ease-in-out infinite; }
+.vb-btn i { font-size: 14px; }
+@keyframes pulse-btn { 0%,100%{opacity:1} 50%{opacity:.6} }
+.vb-speed { font-size: 11px; color: rgba(255,255,255,.5); margin-left: 4px; }
+.vb-speed select { background: rgba(255,255,255,.08); color: rgba(255,255,255,.8); border: 1px solid rgba(255,255,255,.15); border-radius: 4px; padding: 3px 5px; font-size: 11px; font-family: var(--font-sans); cursor: pointer; }
+.vb-speed select option { background: var(--navy); }
+
+/* Mic button on inputs */
+.voice-input-wrap { position: relative; }
+.voice-input-wrap textarea, .voice-input-wrap input { padding-right: 44px !important; }
+.mic-btn {
+  position: absolute; right: 8px; bottom: 8px;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--teal); border: none; cursor: pointer;
+  transition: all .15s; z-index: 2; flex-shrink: 0;
+}
+.mic-btn:hover { background: var(--teal-light); transform: scale(1.08); }
+.mic-btn.recording { background: var(--danger); animation: pulse-btn 1s ease-in-out infinite; }
+.mic-btn i { font-size: 14px; color: var(--white); }
+.mic-btn-inline {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 13px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  background: var(--teal-pale); border: 1px solid rgba(13,122,107,.3);
+  color: var(--teal); cursor: pointer; font-family: var(--font-sans);
+  transition: all .15s; margin-left: 6px; vertical-align: middle;
+}
+.mic-btn-inline:hover { background: var(--teal); color: var(--white); }
+.mic-btn-inline.recording { background: var(--danger); border-color: var(--danger); color: var(--white); animation: pulse-btn 1s ease-in-out infinite; }
+.mic-btn-inline i { font-size: 13px; }
+
+/* Speak button on output */
+.speak-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  background: transparent; border: 1px solid var(--border-strong);
+  color: var(--text-muted); cursor: pointer; font-family: var(--font-sans);
+  transition: all .15s; margin-top: 6px;
+}
+.speak-btn:hover { background: var(--teal-pale); border-color: var(--teal); color: var(--teal); }
+.speak-btn.speaking { background: var(--teal-pale); border-color: var(--teal); color: var(--teal); }
+.speak-btn i { font-size: 12px; }
+
+/* Transcript strip */
+.transcript-strip {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 7px 11px; margin-top: 6px;
+  background: var(--teal-pale); border: 1px solid rgba(13,122,107,.25);
+  border-radius: var(--radius-md); font-size: 12px; color: var(--teal);
+  line-height: 1.4; animation: fadeIn .25s ease;
+}
+.transcript-strip i { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+
+/* Voice status toast */
+.voice-toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: var(--navy); color: var(--white); padding: 9px 18px;
+  border-radius: 20px; font-size: 13px; font-weight: 500; z-index: 9998;
+  display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-lg);
+  animation: fadeIn .2s ease; pointer-events: none;
+}
+.voice-toast i { font-size: 15px; color: var(--gold); }
+.voice-not-supported {
+  background: var(--warn-pale); border: 1px solid #FDE68A;
+  border-radius: var(--radius-md); padding: 9px 13px;
+  font-size: 12px; color: var(--warn); margin: 8px 0;
+}
+</style>
+</head>
+<body>
+
+<!-- EMERGENCY OVERLAY -->
+<div class="overlay" id="overlay" style="display:none">
+  <div class="overlay-modal">
+    <div class="overlay-title"><i class="ti ti-alert-triangle"></i>Possible emergency</div>
+    <div class="overlay-body">
+      Your symptoms include red flag indicators that may require <strong>immediate medical attention</strong>.<br><br>
+      Emergency number for <span id="ov-geo"></span>:
+      <div class="overlay-number" id="ov-num">999</div>
+      Do not wait — call now if you have any doubt.
+    </div>
+    <button class="overlay-primary" onclick="closeOverlay(true)"><i class="ti ti-check" style="font-size:15px;vertical-align:-2px;margin-right:5px"></i>I understand — show me the analysis</button>
+    <button class="overlay-dismiss" onclick="closeOverlay(false)">Dismiss</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-top">
+    <div class="brand">
+      <div class="brand-mark">VKR</div>
+      <div class="brand-text">
+        <div class="brand-name">VKR Global</div>
+        <div class="brand-sub">Advisory &amp; Technology</div>
+      </div>
+    </div>
+    <span class="header-badge">Demo</span>
+  </div>
+  <div class="product-hero">
+    <div class="product-eyebrow">VKRMed Health Intelligence</div>
+    <div class="product-name">VKR<span>Med</span></div>
+    <div class="gold-rule"></div>
+    <div class="product-desc">AI-powered symptom analysis. Personalised by role, geography, and profile. For patients, clinicians, and researchers — each gets the depth they need.</div>
+  </div>
+  <nav class="persona-tabs" aria-label="Active persona">
+    <button class="ptab active" id="ptab-patient" onclick="switchTab('patient')">Patient / Carer</button>
+    <button class="ptab" id="ptab-professional" onclick="switchTab('professional')">Medical Professional</button>
+    <button class="ptab" id="ptab-student" onclick="switchTab('student')">Student / Researcher</button>
+  </nav>
+</header>
+
+<!-- VOICE CONTROL BAR -->
+<div class="voice-bar" id="voice-bar">
+  <span class="voice-bar-label"><i class="ti ti-microphone" style="font-size:12px;vertical-align:-1px;margin-right:4px;"></i>Voice</span>
+  <button class="vb-btn" id="vb-input-toggle" onclick="vbToggleInput()" title="Toggle voice input">
+    <i class="ti ti-microphone" id="vb-input-icon"></i>
+    <span id="vb-input-label">Voice input: Off</span>
+  </button>
+  <button class="vb-btn" id="vb-tts-toggle" onclick="vbToggleTTS()" title="Toggle spoken responses">
+    <i class="ti ti-volume" id="vb-tts-icon"></i>
+    <span id="vb-tts-label">Read aloud: Off</span>
+  </button>
+  <button class="vb-btn" id="vb-stop-btn" onclick="vbStopSpeaking()" style="display:none;" title="Stop speaking">
+    <i class="ti ti-player-stop"></i> Stop
+  </button>
+  <span class="vb-speed" id="vb-speed-wrap" style="display:none;">
+    Speed:
+    <select id="vb-speed" onchange="vbSetSpeed(this.value)">
+      <option value="0.8">Slow</option>
+      <option value="1.0" selected>Normal</option>
+      <option value="1.25">Fast</option>
+      <option value="1.5">Faster</option>
+    </select>
+    Voice:
+    <select id="vb-voice" onchange="vbSetVoice(this.value)">
+      <option value="">Default</option>
+    </select>
+  </span>
+  <span id="vb-status" style="font-size:11px;color:rgba(255,255,255,.4);margin-left:auto;"></span>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- S1: SETUP -->
+  <div id="s1" class="screen active">
+    <div class="step-row">
+      <div class="step-node active" id="sn1">1</div>
+      <div class="step-connector" id="sc1"></div>
+      <div class="step-node idle" id="sn2">2</div>
+      <div class="step-connector" id="sc2"></div>
+      <div class="step-node idle" id="sn3">3</div>
+      <div class="step-connector" id="sc3"></div>
+      <div class="step-node idle" id="sn4">4</div>
+      <span class="step-label">Your profile</span>
+    </div>
+    <div class="disclaimer"><strong>Educational use only.</strong> VKRMed does not diagnose or treat. Always consult a qualified healthcare professional. In an emergency call your local emergency services immediately.</div>
+
+    <h3 class="screen-title">Who is using VKRMed?</h3>
+    <p class="screen-sub">Your role, location, and profile shape the terminology, depth, and resources we surface.</p>
+
+    <div class="sec-lbl">Role</div>
+    <div class="persona-grid-outer">
+      <div class="persona-card-outer" data-p="patient" onclick="selPersona(this)">
+        <i class="ti ti-user-heart"></i>
+        <div class="pco-title">Patient / Carer</div>
+        <div class="pco-desc">Plain English, practical guidance, when to seek help</div>
+      </div>
+      <div class="persona-card-outer" data-p="professional" onclick="selPersona(this)">
+        <i class="ti ti-stethoscope"></i>
+        <div class="pco-title">Medical Professional</div>
+        <div class="pco-desc">ICD-10 codes, differentials, red flags, clinical guidelines</div>
+      </div>
+      <div class="persona-card-outer" data-p="student" onclick="selPersona(this)">
+        <i class="ti ti-school"></i>
+        <div class="pco-title">Student / Researcher</div>
+        <div class="pco-desc">Pathophysiology, live research, contribute &amp; comment</div>
+      </div>
+    </div>
+
+    <div class="sec-lbl" style="margin-top:14px">Region</div>
+    <div class="geo-grid">
+      <button class="g-btn" data-g="uk" onclick="selGeo(this)"><span class="g-flag">🇬🇧</span> United Kingdom</button>
+      <button class="g-btn" data-g="us" onclick="selGeo(this)"><span class="g-flag">🇺🇸</span> United States</button>
+      <button class="g-btn" data-g="aus" onclick="selGeo(this)"><span class="g-flag">🇦🇺</span> Australia / NZ</button>
+      <button class="g-btn" data-g="sg" onclick="selGeo(this)"><span class="g-flag">🇸🇬</span> Singapore</button>
+      <button class="g-btn" data-g="eu" onclick="selGeo(this)"><span class="g-flag">🇪🇺</span> Europe</button>
+      <button class="g-btn" data-g="canada" onclick="selGeo(this)"><span class="g-flag">🇨🇦</span> Canada</button>
+      <button class="g-btn" data-g="other" onclick="selGeo(this)"><i class="ti ti-world" style="font-size:17px"></i> Other / Global</button>
+    </div>
+
+    <div class="sec-lbl" style="margin-top:14px">Profile <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:12px;color:var(--text-muted)">(optional — improves analysis)</span></div>
+    <div class="profile-grid">
+      <div class="field-group"><label>Age</label><input type="number" id="prof-age" min="0" max="120" placeholder="e.g. 42"></div>
+      <div class="field-group"><label>Sex</label>
+        <select id="prof-sex">
+          <option value="">Prefer not to say</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other / non-binary</option>
+        </select>
+      </div>
+      <div class="field-group"><label>Existing conditions</label><input type="text" id="prof-cond" placeholder="e.g. asthma, diabetes"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-s1" disabled onclick="goS2()">Continue →</button>
+    </div>
+    <!-- Early academic access for students -->
+    <div id="early-acad-hint" style="display:none;margin-top:16px;padding:12px 14px;background:linear-gradient(90deg,rgba(13,122,107,.07),rgba(11,31,58,.04));border:1px solid rgba(13,122,107,.2);border-radius:var(--radius-md);">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--teal);margin-bottom:2px;"><i class="ti ti-bolt" style="font-size:14px;vertical-align:-2px;margin-right:4px;"></i>Student shortcut</div>
+          <div style="font-size:12px;color:var(--text-muted);">Skip the symptom analysis — go straight to Quiz or Exam practice on any medical topic.</div>
+        </div>
+        <button class="btn-primary" onclick="earlyAcadAccess()" style="background:var(--teal);white-space:nowrap;">Jump to learning →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2: SYMPTOMS -->
+  <div id="s2" class="screen">
+    <div class="step-row">
+      <div class="step-node done">✓</div>
+      <div class="step-connector done"></div>
+      <div class="step-node active">2</div>
+      <div class="step-connector"></div>
+      <div class="step-node idle">3</div>
+      <div class="step-connector"></div>
+      <div class="step-node idle">4</div>
+      <span class="step-label">Symptoms</span>
+    </div>
+    <div class="chips" id="chips-s2"></div>
+    <h3 class="screen-title">What are you experiencing?</h3>
+    <p class="screen-sub">Select symptoms below and / or describe in your own words.</p>
+    <div class="sec-lbl">Common symptoms</div>
+    <div class="sym-grid">
+      <button class="sym-btn" data-s="Headache" onclick="togSym(this)"><i class="ti ti-brain"></i>Headache</button>
+      <button class="sym-btn" data-s="Fever" onclick="togSym(this)"><i class="ti ti-thermometer"></i>Fever</button>
+      <button class="sym-btn" data-s="Cough" onclick="togSym(this)"><i class="ti ti-lungs"></i>Cough</button>
+      <button class="sym-btn" data-s="Fatigue" onclick="togSym(this)"><i class="ti ti-zzz"></i>Fatigue</button>
+      <button class="sym-btn" data-s="Nausea" onclick="togSym(this)"><i class="ti ti-mood-sick"></i>Nausea</button>
+      <button class="sym-btn" data-s="Sore throat" onclick="togSym(this)"><i class="ti ti-virus"></i>Sore throat</button>
+      <button class="sym-btn" data-s="Chest pain" onclick="togSym(this)"><i class="ti ti-heart"></i>Chest pain</button>
+      <button class="sym-btn" data-s="Shortness of breath" onclick="togSym(this)"><i class="ti ti-wind"></i>Shortness of breath</button>
+      <button class="sym-btn" data-s="Abdominal pain" onclick="togSym(this)"><i class="ti ti-droplet"></i>Abdominal pain</button>
+      <button class="sym-btn" data-s="Rash" onclick="togSym(this)"><i class="ti ti-sun"></i>Rash</button>
+      <button class="sym-btn" data-s="Joint pain" onclick="togSym(this)"><i class="ti ti-bone"></i>Joint pain</button>
+      <button class="sym-btn" data-s="Dizziness" onclick="togSym(this)"><i class="ti ti-rotate"></i>Dizziness</button>
+      <button class="sym-btn" data-s="Back pain" onclick="togSym(this)"><i class="ti ti-spine"></i>Back pain</button>
+      <button class="sym-btn" data-s="Anxiety / stress" onclick="togSym(this)"><i class="ti ti-brain"></i>Anxiety / stress</button>
+      <button class="sym-btn" data-s="Sleep issues" onclick="togSym(this)"><i class="ti ti-moon"></i>Sleep issues</button>
+      <button class="sym-btn" data-s="Vision changes" onclick="togSym(this)"><i class="ti ti-eye"></i>Vision changes</button>
+      <button class="sym-btn" data-s="Palpitations" onclick="togSym(this)"><i class="ti ti-heartbeat"></i>Palpitations</button>
+      <button class="sym-btn" data-s="Swelling" onclick="togSym(this)"><i class="ti ti-arrows-maximize"></i>Swelling</button>
+    </div>
+    <div class="sec-lbl" style="margin-top:10px">Or describe in your own words
+      <button class="mic-btn-inline" id="mic-freetext" onclick="vbStartRecording('free-text',this)" title="Speak your symptoms">
+        <i class="ti ti-microphone"></i> Speak
+      </button>
+    </div>
+    <div class="voice-input-wrap" style="position:relative;">
+      <textarea class="desc-input" id="free-text" rows="3" placeholder="e.g. throbbing pain behind both eyes for 3 days, worse in the morning, with mild nausea…"></textarea>
+    </div>
+    <div id="transcript-freetext" style="display:none;" class="transcript-strip">
+      <i class="ti ti-microphone"></i><span id="transcript-freetext-text">Listening…</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goS3()">Continue →</button>
+      <button class="btn-secondary" onclick="goScreen('s1')">← Back</button>
+    </div>
+  </div>
+
+  <!-- S3: AI Q&A -->
+  <div id="s3" class="screen">
+    <div class="step-row">
+      <div class="step-node done">✓</div>
+      <div class="step-connector done"></div>
+      <div class="step-node done">✓</div>
+      <div class="step-connector done"></div>
+      <div class="step-node active">3</div>
+      <div class="step-connector"></div>
+      <div class="step-node idle">4</div>
+      <span class="step-label">Follow-up</span>
+    </div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+    <div class="chips" id="chips-s3"></div>
+    <div id="qa-area"></div>
+    <div id="qa-loading" style="display:none" class="loading-wrap">
+      <div class="loading-label">Generating next question…</div>
+      <div class="progress-anim"><div class="progress-anim-fill"></div></div>
+    </div>
+    <div class="btn-row"><button class="btn-secondary" onclick="skipToAnalysis()">Skip to analysis →</button></div>
+  </div>
+
+  <!-- S4: LOADING -->
+  <div id="s4" class="screen">
+    <div class="step-row">
+      <div class="step-node done">✓</div>
+      <div class="step-connector done"></div>
+      <div class="step-node done">✓</div>
+      <div class="step-connector done"></div>
+      <div class="step-node done">✓</div>
+      <div class="step-connector done"></div>
+      <div class="step-node active">4</div>
+      <span class="step-label">Analysis</span>
+    </div>
+    <div class="chips" id="chips-s4"></div>
+    <div style="padding: 32px 0 20px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;animation:spin 2s linear infinite;">
+          <i class="ti ti-brain" style="font-size:20px;color:white;"></i>
+        </div>
+        <div>
+          <div style="font-size:15px;font-weight:500;color:var(--text-primary);margin-bottom:3px;">VKRMed AI</div>
+          <div class="loading-label" id="load-msg" style="margin:0">Analysing your symptoms…</div>
+        </div>
+      </div>
+      <div class="progress-anim" style="width:100%;max-width:320px"><div class="progress-anim-fill"></div></div>
+      <div id="load-steps" style="margin-top:20px;display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+  </div>
+
+  <!-- S5: RESULTS -->
+  <div id="s5" class="screen">
+    <div class="chips" id="chips-s5"></div>
+    <div id="urgency-area"></div>
+    <h3 class="screen-title">Analysis</h3>
+    <p class="screen-sub" id="r-sub"></p>
+    <div id="results-area"></div>
+    <div id="advice-area"></div>
+    <div id="research-area"></div>
+    <div id="drug-compare-area"></div>
+    <div id="academic-panel"></div>
+    <div class="divider"></div>
+    <div class="sec-lbl">Resources — <span id="res-geo-lbl"></span></div>
+    <div class="resource-grid" id="resource-area"></div>
+    <div class="export-row" id="export-row"></div>
+    <div style="background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);border-radius:var(--radius-lg);padding:18px 20px;margin-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">VKR Global Advisory</div>
+        <div style="font-size:14px;font-weight:500;color:white;margin-bottom:3px;">Need expert financial or clinical advisory?</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.4;">VKRMed is one of several intelligent tools built by VKR Global. Speak to our team.</div>
+      </div>
+      <a href="https://vkrglobal.net" target="_blank" rel="noopener" style="background:var(--gold);color:var(--navy);border:none;border-radius:var(--radius-md);padding:10px 20px;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .15s;display:inline-block;" onmouseover="this.style.background='#E8C96A'" onmouseout="this.style.background='var(--gold)'">Visit VKR Global ↗</a>
+    </div>
+    <div class="btn-row" style="margin-top:14px">
+      <button class="btn-primary" onclick="resetAll()">← Start over</button>
+    </div>
+    <div class="disclaimer-sm">VKRMed is an AI-powered educational tool built by VKR Global. It is not a diagnostic instrument and does not replace clinical assessment. Always consult a qualified healthcare professional before acting on any information provided.</div>
+  </div>
+
+  <!-- S6: ACADEMIC HUB -->
+  <div id="s6" class="screen">
+    <div class="chips" id="chips-s6"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--teal));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="ti ti-school" style="font-size:18px;color:white;"></i>
+      </div>
+      <div>
+        <h3 class="screen-title" style="margin-bottom:1px;">Academic Learning Mode</h3>
+        <p style="font-size:12px;color:var(--text-muted);">Topic: <span id="acad-topic" style="font-weight:500;color:var(--teal)"></span></p>
+      </div>
+    </div>
+    <p class="screen-sub">Choose how you want to learn. Quiz mode tests recall with points. Exam mode mirrors real past papers from your institution.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+      <div class="acad-mode-card" id="card-quiz" onclick="selectAcadMode('quiz')">
+        <div class="amc-icon" style="background:linear-gradient(135deg,#1D4ED8,#3B82F6);">
+          <i class="ti ti-trophy"></i>
+        </div>
+        <div class="amc-title">Quick Quiz</div>
+        <div class="amc-desc">10 AI-generated questions on this topic. Multiple choice, scored in real time. Earn points, track your streak.</div>
+        <div class="amc-tags"><span class="amc-tag">Points system</span><span class="amc-tag">Instant feedback</span><span class="amc-tag">Explanations</span></div>
+      </div>
+      <div class="acad-mode-card" id="card-exam" onclick="selectAcadMode('exam')">
+        <div class="amc-icon" style="background:linear-gradient(135deg,var(--teal),var(--teal-light));">
+          <i class="ti ti-certificate"></i>
+        </div>
+        <div class="amc-title">Exam Practice</div>
+        <div class="amc-desc">Select your institution and exam board. Receive past-paper style questions with AI marking against the official marking scheme.</div>
+        <div class="amc-tags"><span class="amc-tag">Exam boards</span><span class="amc-tag">AI marking</span><span class="amc-tag">Marking scheme</span></div>
+      </div>
+    </div>
+
+    <!-- EXAM BOARD SELECTOR (shown when exam mode selected) -->
+    <div id="exam-board-section" style="display:none;">
+      <div class="sec-lbl">Your institution / exam board</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;" id="board-grid">
+        <button class="board-btn" data-board="USMLE" data-country="United States" onclick="selBoard(this)"><span class="board-flag">🇺🇸</span><div><div class="bb-name">USMLE</div><div class="bb-sub">Steps 1, 2 &amp; 3 — United States</div></div></button>
+        <button class="board-btn" data-board="MRCPsych/MRCP" data-country="United Kingdom" onclick="selBoard(this)"><span class="board-flag">🇬🇧</span><div><div class="bb-name">MRCP / MRCPsych</div><div class="bb-sub">Royal Colleges — United Kingdom</div></div></button>
+        <button class="board-btn" data-board="AMC" data-country="Australia" onclick="selBoard(this)"><span class="board-flag">🇦🇺</span><div><div class="bb-name">AMC</div><div class="bb-sub">Australian Medical Council</div></div></button>
+        <button class="board-btn" data-board="SMC/NUS" data-country="Singapore" onclick="selBoard(this)"><span class="board-flag">🇸🇬</span><div><div class="bb-name">NUS / NTU Medicine</div><div class="bb-sub">Singapore Medical Council</div></div></button>
+        <button class="board-btn" data-board="MCCQE" data-country="Canada" onclick="selBoard(this)"><span class="board-flag">🇨🇦</span><div><div class="bb-name">MCCQE</div><div class="bb-sub">Medical Council of Canada</div></div></button>
+        <button class="board-btn" data-board="PLAB/GMC" data-country="United Kingdom" onclick="selBoard(this)"><span class="board-flag">🇬🇧</span><div><div class="bb-name">PLAB / GMC</div><div class="bb-sub">General Medical Council — UK</div></div></button>
+        <button class="board-btn" data-board="European Board" data-country="Europe" onclick="selBoard(this)"><span class="board-flag">🇪🇺</span><div><div class="bb-name">EBIM / EBS</div><div class="bb-sub">European Board — Internal Medicine</div></div></button>
+        <button class="board-btn" data-board="General University" data-country="Other" onclick="selBoard(this)"><span class="board-flag">🎓</span><div><div class="bb-name">University Exam</div><div class="bb-sub">Generic medical school style</div></div></button>
+      </div>
+      <div class="sec-lbl">Exam level / stage</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;" id="level-grid">
+        <button class="level-btn" data-level="Preclinical / Year 1–2" onclick="selLevel(this)">Preclinical / Yr 1–2</button>
+        <button class="level-btn" data-level="Clinical / Year 3–4" onclick="selLevel(this)">Clinical / Yr 3–4</button>
+        <button class="level-btn" data-level="Finals / Qualifying" onclick="selLevel(this)">Finals / Qualifying</button>
+        <button class="level-btn" data-level="Postgraduate / Specialty" onclick="selLevel(this)">Postgraduate</button>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-start-acad" disabled onclick="startAcademic()">Start →</button>
+      <button class="btn-secondary" onclick="goScreen('s5')">← Back to results</button>
+    </div>
+  </div>
+
+  <!-- S7: QUIZ MODE -->
+  <div id="s7" class="screen">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <i class="ti ti-trophy" style="font-size:20px;color:#1D4ED8;"></i>
+        <div>
+          <div style="font-size:14px;font-weight:600;">Quick Quiz</div>
+          <div style="font-size:11px;color:var(--text-muted);">Topic: <span id="quiz-topic-lbl"></span></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="score-badge"><i class="ti ti-star" style="font-size:13px;color:var(--gold);"></i> <span id="quiz-score">0</span> pts</div>
+        <div class="score-badge"><i class="ti ti-flame" style="font-size:13px;color:#EF4444;"></i> <span id="quiz-streak">0</span></div>
+        <div style="font-size:12px;color:var(--text-muted);">Q<span id="quiz-qnum">1</span>/<span id="quiz-qtotal">10</span></div>
+      </div>
+    </div>
+    <div class="prog-wrap"><div class="prog-fill" id="quiz-prog" style="width:0%"></div></div>
+    <div id="quiz-area"></div>
+    <div id="quiz-feedback" style="display:none;" class="quiz-feedback-box"></div>
+    <div id="quiz-loading" style="display:none;" class="loading-wrap">
+      <div class="loading-label">Generating question…</div>
+      <div class="progress-anim" style="width:180px"><div class="progress-anim-fill"></div></div>
+    </div>
+    <div class="btn-row" id="quiz-nav" style="display:none;">
+      <button class="btn-primary" id="btn-quiz-next" onclick="nextQuizQ()">Next question →</button>
+    </div>
+  </div>
+
+  <!-- S8: EXAM MODE -->
+  <div id="s8" class="screen">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+      <i class="ti ti-certificate" style="font-size:22px;color:var(--teal);"></i>
+      <div>
+        <div style="font-size:14px;font-weight:600;">Exam Practice</div>
+        <div style="font-size:11px;color:var(--text-muted);"><span id="exam-board-lbl"></span> · <span id="exam-level-lbl"></span> · Topic: <span id="exam-topic-lbl"></span></div>
+      </div>
+    </div>
+    <div style="background:var(--warn-pale);border:1px solid #FDE68A;border-radius:var(--radius-md);padding:10px 13px;font-size:12px;color:var(--warn);margin-bottom:14px;line-height:1.5;">
+      <strong>Exam conditions.</strong> These questions are styled after past papers from <span id="exam-board-lbl2"></span>. Write full answers — the AI will mark against the official marking scheme and give detailed feedback.
+    </div>
+    <div id="exam-loading" style="display:none;" class="loading-wrap">
+      <div class="loading-label" id="exam-load-msg">Generating exam questions…</div>
+      <div class="progress-anim" style="width:220px"><div class="progress-anim-fill"></div></div>
+    </div>
+    <div id="exam-area"></div>
+    <div class="btn-row" id="exam-submit-row" style="display:none;">
+      <button class="btn-gold" onclick="submitExam()"><i class="ti ti-send" style="font-size:14px;vertical-align:-2px;margin-right:5px;"></i>Submit for marking</button>
+      <button class="btn-secondary" onclick="goScreen('s6')">← Back</button>
+    </div>
+  </div>
+
+  <!-- S9: MARKING RESULTS -->
+  <div id="s9" class="screen">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="ti ti-clipboard-check" style="font-size:20px;color:white;"></i>
+      </div>
+      <div>
+        <div style="font-size:16px;font-weight:600;">Marking complete</div>
+        <div style="font-size:12px;color:var(--text-muted);">AI marked against the <span id="mark-board-lbl"></span> marking scheme</div>
+      </div>
+    </div>
+    <div id="mark-summary-bar" style="margin-bottom:16px;"></div>
+    <div id="marking-area"></div>
+    <div id="mark-advice-area"></div>
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn-primary" onclick="goScreen('s6')">Try another question set →</button>
+      <button class="btn-secondary" onclick="goScreen('s5')">← Back to analysis</button>
+      <button class="btn-secondary" onclick="resetAll()">Start over</button>
+    </div>
+    <div class="disclaimer-sm">AI marking is indicative only. Marking schemes are generated to match the style and standard of the selected exam board but are not official materials. Always verify against your institution's official resources.</div>
+  </div>
+
+  <!-- S10: ACADEMIC QUICK START — unified school + postgrad -->
+  <div id="s10" class="screen">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+      <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="ti ti-school" style="font-size:19px;color:white;"></i>
+      </div>
+      <div>
+        <h3 class="screen-title" style="margin:0">Academic Learning — Quick Start</h3>
+        <p style="font-size:12px;color:var(--text-muted);margin:0;">Quiz &amp; exam practice — no symptom analysis needed</p>
+      </div>
+    </div>
+
+    <!-- STEP A: Learner track -->
+    <div class="sec-lbl">Step 1 — What type of learner?</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+      <div class="acad-mode-card" id="track-school" onclick="selectTrack('school')">
+        <div class="amc-icon" style="background:linear-gradient(135deg,#7C3AED,#A855F7);"><i class="ti ti-pencil"></i></div>
+        <div class="amc-title">School Student</div>
+        <div class="amc-desc">GCSE, A-Level, IGCSE, IB and equivalent — Biology, Chemistry, Physics, Psychology, PE &amp; Health.</div>
+        <div class="amc-tags"><span class="amc-tag">Age 11–18</span><span class="amc-tag">K–12</span><span class="amc-tag">All sciences</span></div>
+      </div>
+      <div class="acad-mode-card" id="track-uni" onclick="selectTrack('uni')">
+        <div class="amc-icon" style="background:linear-gradient(135deg,var(--teal),var(--teal-light));"><i class="ti ti-certificate"></i></div>
+        <div class="amc-title">University / Postgrad</div>
+        <div class="amc-desc">Medical school, specialty boards, licensing exams — USMLE, MRCP, AMC, PLAB and more.</div>
+        <div class="amc-tags"><span class="amc-tag">Medical school</span><span class="amc-tag">Boards</span><span class="amc-tag">Postgrad</span></div>
+      </div>
+    </div>
+
+    <!-- STEP B: School track config (dynamic) -->
+    <div id="school-config" style="display:none;">
+      <div class="sec-lbl">Step 2 — Country &amp; exam board</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;" id="school-country-btns">
+        <button class="level-btn" data-c="uk" onclick="selectSchoolCountry(this)">🇬🇧 United Kingdom</button>
+        <button class="level-btn" data-c="sg" onclick="selectSchoolCountry(this)">🇸🇬 Singapore</button>
+        <button class="level-btn" data-c="us" onclick="selectSchoolCountry(this)">🇺🇸 United States</button>
+        <button class="level-btn" data-c="aus" onclick="selectSchoolCountry(this)">🇦🇺 Australia / NZ</button>
+        <button class="level-btn" data-c="eu" onclick="selectSchoolCountry(this)">🇪🇺 Europe / IB</button>
+        <button class="level-btn" data-c="canada" onclick="selectSchoolCountry(this)">🇨🇦 Canada</button>
+        <button class="level-btn" data-c="other" onclick="selectSchoolCountry(this)">🌐 Other / IB</button>
+      </div>
+      <div id="school-boards-area" style="display:none;">
+        <div class="sec-lbl" style="margin-top:2px">Exam board</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;" id="school-board-grid"></div>
+        <div class="sec-lbl">Year group / level</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;" id="school-year-grid"></div>
+        <div class="sec-lbl">Subject</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;" id="school-subject-grid"></div>
+      </div>
+    </div>
+
+    <!-- STEP B: University / Postgrad config -->
+    <div id="uni-config" style="display:none;">
+      <div class="sec-lbl">Step 2 — Exam board / qualification</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;" id="uni-board-grid">
+        <button class="board-btn" data-board="USMLE Step 1" data-style="USMLE Step 1 (basic sciences, clinical correlates)" onclick="selBoard(this)"><span class="board-flag">🇺🇸</span><div><div class="bb-name">USMLE Step 1</div><div class="bb-sub">Basic sciences — United States</div></div></button>
+        <button class="board-btn" data-board="USMLE Step 2 CK" data-style="USMLE Step 2 CK (clinical knowledge, vignette-based)" onclick="selBoard(this)"><span class="board-flag">🇺🇸</span><div><div class="bb-name">USMLE Step 2 CK</div><div class="bb-sub">Clinical knowledge — United States</div></div></button>
+        <button class="board-btn" data-board="MRCP Part 1" data-style="MRCP Part 1 UK Royal Colleges (best-of-five MCQ, clinical science)" onclick="selBoard(this)"><span class="board-flag">🇬🇧</span><div><div class="bb-name">MRCP Part 1</div><div class="bb-sub">Royal Colleges — UK</div></div></button>
+        <button class="board-btn" data-board="MRCP Part 2" data-style="MRCP Part 2 written (best-of-five, complex clinical scenarios)" onclick="selBoard(this)"><span class="board-flag">🇬🇧</span><div><div class="bb-name">MRCP Part 2</div><div class="bb-sub">Royal Colleges — UK</div></div></button>
+        <button class="board-btn" data-board="PLAB Part 1" data-style="PLAB Part 1 GMC UK (single best answer, 180 questions style)" onclick="selBoard(this)"><span class="board-flag">🇬🇧</span><div><div class="bb-name">PLAB Part 1</div><div class="bb-sub">GMC — UK / international</div></div></button>
+        <button class="board-btn" data-board="MRCPsych Paper A" data-style="MRCPsych Paper A Royal College of Psychiatrists (basic science, EMI, SBA)" onclick="selBoard(this)"><span class="board-flag">🇬🇧</span><div><div class="bb-name">MRCPsych Paper A</div><div class="bb-sub">Royal College of Psychiatrists — UK</div></div></button>
+        <button class="board-btn" data-board="AMC MCQ" data-style="AMC MCQ (Australian Medical Council clinical knowledge)" onclick="selBoard(this)"><span class="board-flag">🇦🇺</span><div><div class="bb-name">AMC MCQ</div><div class="bb-sub">Australian Medical Council</div></div></button>
+        <button class="board-btn" data-board="NUS / SMC" data-style="NUS Medicine / Singapore Medical Council licensing style" onclick="selBoard(this)"><span class="board-flag">🇸🇬</span><div><div class="bb-name">NUS / SMC</div><div class="bb-sub">Singapore Medical Council</div></div></button>
+        <button class="board-btn" data-board="MCCQE Part 1" data-style="MCCQE Part 1 Medical Council of Canada (CDM and SBA questions)" onclick="selBoard(this)"><span class="board-flag">🇨🇦</span><div><div class="bb-name">MCCQE Part 1</div><div class="bb-sub">Medical Council of Canada</div></div></button>
+        <button class="board-btn" data-board="EBIM" data-style="European Board of Internal Medicine (EBIM style, SAQ and clinical scenarios)" onclick="selBoard(this)"><span class="board-flag">🇪🇺</span><div><div class="bb-name">EBIM</div><div class="bb-sub">European Board Internal Medicine</div></div></button>
+        <button class="board-btn" data-board="AGA Board Exam" data-style="AGA Board Exam (American Gastroenterological Association, GI specialty)" onclick="selBoard(this)"><span class="board-flag">🇺🇸</span><div><div class="bb-name">AGA Board Exam</div><div class="bb-sub">Gastroenterology specialty — US</div></div></button>
+        <button class="board-btn" data-board="General Medical School" data-style="Generic medical school exam (university-level, mixed question types)" onclick="selBoard(this)"><span class="board-flag">🎓</span><div><div class="bb-name">General Medical School</div><div class="bb-sub">University — generic style</div></div></button>
+      </div>
+      <div class="sec-lbl">Stage</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+        <button class="level-btn" data-level="Preclinical / Year 1–2" onclick="selLevel(this)">Preclinical / Yr 1–2</button>
+        <button class="level-btn" data-level="Clinical / Year 3–4" onclick="selLevel(this)">Clinical / Yr 3–4</button>
+        <button class="level-btn" data-level="Finals / Qualifying" onclick="selLevel(this)">Finals / Qualifying</button>
+        <button class="level-btn" data-level="Postgraduate / Specialty" onclick="selLevel(this)">Postgraduate</button>
+      </div>
+    </div>
+
+    <!-- STEP C: Topic (both tracks) -->
+    <div id="topic-config" style="display:none;">
+      <div class="sec-lbl">Step 3 — Topic</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;" id="topic-quick-btns"></div>
+      <div class="sec-lbl" style="margin-top:8px">Or enter your own topic</div>
+      <input type="text" id="custom-topic-input" class="free-input" style="margin:0 0 14px;padding:9px 12px;font-size:13px;" placeholder="e.g. Photosynthesis, Cell Division, Nervous System, Osmosis…" oninput="checkTopicReady()">
+
+      <!-- STEP D: Mode -->
+      <div class="sec-lbl">Step 4 — Mode</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+        <div class="acad-mode-card" id="ea-card-quiz" onclick="selectEaMode('quiz')">
+          <div class="amc-icon" style="background:linear-gradient(135deg,#1D4ED8,#3B82F6);"><i class="ti ti-trophy"></i></div>
+          <div class="amc-title">Quick Quiz</div>
+          <div class="amc-desc">10 MCQs, points &amp; streak system, instant explanations after each answer.</div>
+          <div class="amc-tags"><span class="amc-tag">Multiple choice</span><span class="amc-tag">Scored</span><span class="amc-tag">Instant feedback</span></div>
+        </div>
+        <div class="acad-mode-card" id="ea-card-exam" onclick="selectEaMode('exam')">
+          <div class="amc-icon" style="background:linear-gradient(135deg,var(--teal),var(--teal-light));"><i class="ti ti-writing"></i></div>
+          <div class="amc-title">Exam Practice</div>
+          <div class="amc-desc">Structured past-paper questions. Write full answers. AI marks against the official marking scheme.</div>
+          <div class="amc-tags"><span class="amc-tag">Free-text answers</span><span class="amc-tag">AI marking</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-ea-go" disabled onclick="launchEarlyAcad()">Start →</button>
+      <button class="btn-secondary" onclick="goScreen('s1')">← Back</button>
+    </div>
+  </div>
+
+  <!-- S11: DRUG COMPARISON -->
+  <div id="s11" class="screen">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--navy));display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="ti ti-pill" style="font-size:19px;color:white;"></i>
+      </div>
+      <div>
+        <h3 class="screen-title" style="margin:0" id="dc-title">Drug Comparison</h3>
+        <p style="font-size:12px;color:var(--text-muted);margin:0;" id="dc-subtitle"></p>
+      </div>
+    </div>
+    <div class="disclaimer" style="margin-bottom:14px;"><strong>Information only.</strong> Always consult a pharmacist or prescriber before starting, stopping, or switching any medication. User ratings are crowd-sourced and not clinically validated.</div>
+
+    <!-- Sort / filter bar -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+      <span style="font-size:12px;color:var(--text-muted);font-weight:500;">Sort by:</span>
+      <button class="dc-sort-btn active" data-sort="score" onclick="dcSort(this,'score')">Best overall ↓</button>
+      <button class="dc-sort-btn" data-sort="cost" onclick="dcSort(this,'cost')">Lowest cost</button>
+      <button class="dc-sort-btn" data-sort="rating" onclick="dcSort(this,'rating')">User rating</button>
+      <button class="dc-sort-btn" data-sort="evidence" onclick="dcSort(this,'evidence')">Evidence grade</button>
+      <div style="margin-left:auto;display:flex;gap:6px;">
+        <button class="dc-filter-btn active" data-filter="all" onclick="dcFilter(this,'all')">All</button>
+        <button class="dc-filter-btn" data-filter="branded" onclick="dcFilter(this,'branded')">Branded</button>
+        <button class="dc-filter-btn" data-filter="generic" onclick="dcFilter(this,'generic')">Generic / OTC</button>
+      </div>
+    </div>
+
+    <div id="dc-loading" style="display:none;" class="loading-wrap">
+      <div class="loading-label" id="dc-load-msg">Loading drug comparison data…</div>
+      <div class="progress-anim" style="width:220px"><div class="progress-anim-fill"></div></div>
+    </div>
+
+    <div id="dc-cards-area"></div>
+
+    <!-- User feedback submit -->
+    <div id="dc-feedback-panel" style="display:none;margin-top:16px;">
+      <div style="background:var(--color-background-secondary,#F1F4F7);border-radius:var(--radius-lg);padding:14px 16px;border:1px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Share your experience</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:10px;">Rated drug: <strong id="dc-feedback-drug"></strong></div>
+        <div style="display:flex;gap:6px;margin-bottom:10px;" id="dc-star-row">
+          <span style="font-size:12px;color:var(--text-muted);align-self:center;">Your rating:</span>
+          ${[1,2,3,4,5].map(n=>`<button class="dc-star" data-val="${n}" onclick="dcSetStar(${n})">★</button>`).join('')}
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;" id="dc-tag-row">
+          <span style="font-size:12px;color:var(--text-muted);align-self:center;">Experience:</span>
+          ${['Works well','Fast relief','Side effects','Cost-effective','Prefer branded','Prefer generic','Would recommend'].map(t=>`<button class="dc-exp-tag" onclick="dcToggleTag(this)">${t}</button>`).join('')}
+        </div>
+        <textarea id="dc-feedback-text" class="desc-input" rows="2" placeholder="Optional: describe your experience in a few words…" style="margin-bottom:8px;"></textarea>
+        <div class="btn-row" style="margin-top:0;">
+          <button class="btn-primary" onclick="dcSubmitFeedback()" style="font-size:12px;padding:8px 16px;">Submit rating</button>
+          <button class="btn-secondary" onclick="document.getElementById('dc-feedback-panel').style.display='none'" style="font-size:12px;padding:8px 14px;">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn-secondary" onclick="goScreen('s5')">← Back to analysis</button>
+    </div>
+    <div class="disclaimer-sm">Drug pricing is indicative and may vary by retailer, region, and time. Branded names and generics may contain the same active ingredient at different prices. VKRMed does not endorse any specific product.</div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <span class="footer-brand"><strong>VKR Global</strong> · VKRMed Health Intelligence · Version 1.0</span>
+  <a class="footer-link" href="https://vkrglobal.net" target="_blank" rel="noopener">vkrglobal.net ↗</a>
+</footer>
+
+<script>
+// ── STATE ──
+let persona = null, geo = null;
+let selSyms = [], freeText = '';
+let profAge = '', profSex = '', profCond = '';
+let qaHistory = [], qNum = 0;
+const MAX_QS = 4;
+
+// Academic state
+let acadMode = null, acadBoard = null, acadLevel = null, acadTopic = '';
+let quizQs = [], quizIdx = 0, quizScore = 0, quizStreak = 0, quizAnswered = false;
+let examQs = [], examAnswers = {};
+
+// ── GEO DATA ──
+const GEO = {
+  uk: { label: 'United Kingdom', emergency: '999', nonEmergency: 'NHS 111', drug: 'paracetamol', guideline: 'NICE' },
+  us: { label: 'United States', emergency: '911', nonEmergency: '811', drug: 'acetaminophen', guideline: 'ACP/USPSTF' },
+  aus: { label: 'Australia / NZ', emergency: '000 / 111 (NZ)', nonEmergency: 'healthdirect 1800 022 222', drug: 'paracetamol', guideline: 'RACGP/NZGG' },
+  sg: { label: 'Singapore', emergency: '995', nonEmergency: 'HealthHub / 1800 333 9999', drug: 'paracetamol', guideline: 'MOH Singapore' },
+  eu: { label: 'Europe', emergency: '112', nonEmergency: 'local GP / out-of-hours', drug: 'paracetamol', guideline: 'EMA/ESCMID' },
+  canada: { label: 'Canada', emergency: '911', nonEmergency: '811 (HealthLink)', drug: 'acetaminophen', guideline: 'CMA' },
+  other: { label: 'Global', emergency: 'local emergency number', nonEmergency: 'local GP / urgent care', drug: 'paracetamol', guideline: 'WHO' }
+};
+
+const PERSONA_LABELS = { patient: 'Patient / Carer', professional: 'Medical Professional', student: 'Student / Researcher' };
+
+const RESOURCES = {
+  uk: [
+    { i: 'ti-building-hospital', n: 'NHS 111', d: 'Non-emergency medical advice', u: 'https://111.nhs.uk/' },
+    { i: 'ti-stethoscope', n: 'Find a GP – NHS', d: 'Locate your nearest GP surgery', u: 'https://www.nhs.uk/service-search/find-a-gp' },
+    { i: 'ti-book', n: 'NHS Conditions A–Z', d: 'Clinician-reviewed condition guides', u: 'https://www.nhs.uk/conditions/' },
+    { i: 'ti-pill', n: 'NHS Medicines A–Z', d: 'Evidence-based drug information', u: 'https://www.nhs.uk/medicines/' }
+  ],
+  us: [
+    { i: 'ti-building-hospital', n: 'HealthCare.gov – Find Care', d: 'Locate local healthcare services', u: 'https://www.healthcare.gov/find-care/' },
+    { i: 'ti-book', n: 'MedlinePlus (NIH)', d: 'NIH-backed condition and drug info', u: 'https://medlineplus.gov/' },
+    { i: 'ti-stethoscope', n: 'CDC Health Topics', d: 'Public health guidance from the CDC', u: 'https://www.cdc.gov/az/index.html' },
+    { i: 'ti-pill', n: 'DailyMed (NIH)', d: 'FDA drug labelling information', u: 'https://dailymed.nlm.nih.gov/' }
+  ],
+  aus: [
+    { i: 'ti-building-hospital', n: 'healthdirect Australia', d: 'Australian government health advice', u: 'https://www.healthdirect.gov.au/' },
+    { i: 'ti-book', n: 'Health Navigator NZ', d: 'New Zealand health information', u: 'https://www.healthnavigator.org.nz/' },
+    { i: 'ti-stethoscope', n: 'Find a GP – healthdirect', d: 'Locate GP services in Australia', u: 'https://www.healthdirect.gov.au/australian-health-services' },
+    { i: 'ti-pill', n: 'NPS MedicineWise', d: 'Independent Australian medicine info', u: 'https://www.nps.org.au/' }
+  ],
+  sg: [
+    { i: 'ti-building-hospital', n: 'HealthHub Singapore', d: 'Official Singapore health portal', u: 'https://www.healthhub.sg/' },
+    { i: 'ti-stethoscope', n: 'Find a GP – MOH', d: 'Singapore Ministry of Health GP finder', u: 'https://www.moh.gov.sg/' },
+    { i: 'ti-book', n: 'SingHealth Patient Education', d: 'Condition guides from SingHealth', u: 'https://www.singhealth.com.sg/patient-care/patient-education' },
+    { i: 'ti-phone', n: 'Health Advice Line', d: '1800-333-9999 — non-emergency advice', u: 'https://www.healthhub.sg/' }
+  ],
+  eu: [
+    { i: 'ti-book', n: 'European Medicines Agency', d: 'EU-wide drug and safety information', u: 'https://www.ema.europa.eu/' },
+    { i: 'ti-building-hospital', n: 'Patient.info', d: 'Clinician-reviewed condition guides', u: 'https://patient.info/' },
+    { i: 'ti-stethoscope', n: 'WHO Health Topics', d: 'Global health guidance from the WHO', u: 'https://www.who.int/health-topics/' },
+    { i: 'ti-pill', n: 'e-lactancia', d: 'Drug safety in pregnancy / lactation', u: 'https://www.e-lactancia.org/' }
+  ],
+  canada: [
+    { i: 'ti-building-hospital', n: 'Health Canada', d: 'Official Canadian health guidance', u: 'https://www.canada.ca/en/health-canada.html' },
+    { i: 'ti-stethoscope', n: '811 HealthLink', d: 'Provincial nurse advice line', u: 'https://www.canada.ca/en/public-health/services/health-promotion/healthy-living/provincial-territorial-health-authorities.html' },
+    { i: 'ti-book', n: 'MedlinePlus (NIH)', d: 'NIH-backed condition and drug info', u: 'https://medlineplus.gov/' },
+    { i: 'ti-pill', n: 'Health Canada Drug Database', d: 'Approved drug product information', u: 'https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/drug-product-database.html' }
+  ],
+  other: [
+    { i: 'ti-book', n: 'Patient.info', d: 'Clinician-reviewed condition guides', u: 'https://patient.info/' },
+    { i: 'ti-stethoscope', n: 'WHO Health Topics', d: 'Global health guidance from WHO', u: 'https://www.who.int/health-topics/' },
+    { i: 'ti-building-hospital', n: 'NHS Conditions A–Z', d: 'Internationally trusted clinical info', u: 'https://www.nhs.uk/conditions/' },
+    { i: 'ti-pill', n: 'MedlinePlus (NIH)', d: 'NIH-backed condition and drug info', u: 'https://medlineplus.gov/' }
+  ]
+};
+
+// ── PERSONA TAB SWITCH (header) ──
+function switchTab(p) {
+  ['patient','professional','student'].forEach(t => document.getElementById('ptab-' + t).classList.toggle('active', t === p));
+  document.querySelectorAll('.persona-card-outer').forEach(c => { c.classList.toggle('sel', c.dataset.p === p); });
+  persona = p;
+  document.getElementById('btn-s1').disabled = false;
+  const hint = document.getElementById('early-acad-hint');
+  if (hint) hint.style.display = p === 'student' ? 'block' : 'none';
+}
+
+// ── SCREEN NAV ──
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goS2() {
+  profAge = document.getElementById('prof-age').value;
+  profSex = document.getElementById('prof-sex').value;
+  profCond = document.getElementById('prof-cond').value;
+  renderChips('chips-s2');
+  goScreen('s2');
+}
+function goS3() {
+  freeText = document.getElementById('free-text').value.trim();
+  if (selSyms.length === 0 && !freeText) { document.getElementById('free-text').focus(); return; }
+  qaHistory = []; qNum = 0;
+  renderChips('chips-s3');
+  goScreen('s3');
+  fetchNextQ();
+}
+
+// ── PERSONA / GEO SELECT ──
+function selPersona(el) {
+  document.querySelectorAll('.persona-card-outer').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  persona = el.dataset.p;
+  ['patient','professional','student'].forEach(t => document.getElementById('ptab-' + t).classList.toggle('active', t === persona));
+  // Show early academic shortcut for students
+  const hint = document.getElementById('early-acad-hint');
+  if (hint) hint.style.display = persona === 'student' ? 'block' : 'none';
+  checkS1();
+}
+function selGeo(el) {
+  document.querySelectorAll('.g-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel'); geo = el.dataset.g; checkS1();
+}
+function checkS1() {
+  document.getElementById('btn-s1').disabled = !(persona && geo);
+}
+function togSym(btn) {
+  const s = btn.dataset.s;
+  if (btn.classList.contains('sel')) { btn.classList.remove('sel'); selSyms = selSyms.filter(x => x !== s); }
+  else { btn.classList.add('sel'); selSyms.push(s); }
+}
+
+// ── CHIPS ──
+function renderChips(id) {
+  const g = GEO[geo] || GEO.other;
+  let h = `<span class="chip persona">${PERSONA_LABELS[persona]}</span><span class="chip geo">${g.label}</span>`;
+  if (profAge) h += `<span class="chip profile">Age ${profAge}</span>`;
+  if (profSex && profSex !== '') h += `<span class="chip profile">${profSex}</span>`;
+  if (profCond) h += `<span class="chip profile">${profCond}</span>`;
+  selSyms.forEach(s => h += `<span class="chip sym">${s}</span>`);
+  document.getElementById(id).innerHTML = h;
+}
+
+// ── Q&A ──
+function buildQSys() {
+  const g = GEO[geo] || GEO.other;
+  return `You are a medical triage assistant for VKRMed by VKR Global. The user is a ${persona} (${PERSONA_LABELS[persona]}) in ${g.label}. Age: ${profAge||'unknown'}, sex: ${profSex||'unspecified'}, existing conditions: ${profCond||'none stated'}. Generate ONE targeted follow-up question. ${persona==='professional'?'Use clinical terminology.':persona==='student'?'Frame with a learning angle.':'Use plain, reassuring language.'} Respond ONLY with valid JSON, no markdown: {"question":"...","options":["...","...","...","..."]}`;
+}
+function buildQUser() {
+  let m = `Symptoms: ${selSyms.join(', ')||'see description'}.`;
+  if (freeText) m += ` Description: "${freeText}".`;
+  if (qaHistory.length) m += ` Prior Q&A: ${qaHistory.map(q=>`Q:${q.q} A:${q.a}`).join(' | ')}.`;
+  m += ` This is question ${qNum+1} of ${MAX_QS}.`;
+  return m;
+}
+async function fetchNextQ() {
+  if (qNum >= MAX_QS) { skipToAnalysis(); return; }
+  document.getElementById('qa-loading').style.display = 'block';
+  document.getElementById('qa-area').innerHTML = '';
+  try {
+    const res = await fetch('/api/anthropic', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1500, system: buildQSys(), messages: [{ role: 'user', content: buildQUser() }] })
+    });
+    const d = await res.json();
+    const raw = d.content.map(b => b.text || '').join('');
+    let p = robustParse(raw);
+    document.getElementById('qa-loading').style.display = 'none';
+    if (!p || !p.question) { skipToAnalysis(); return; }
+    renderQ(p); qNum++;
+  } catch { document.getElementById('qa-loading').style.display = 'none'; skipToAnalysis(); }
+}
+function renderQ(p) {
+  const pct = Math.round((qNum / MAX_QS) * 100);
+  document.getElementById('prog').style.width = pct + '%';
+  // Auto-read question if TTS enabled
+  if (VB.ttsEnabled) setTimeout(() => vbDoSpeak(p.question), 400);
+  document.getElementById('qa-area').innerHTML = `
+    <div class="q-card">
+      <div class="q-num" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>Question ${qNum+1} of ${MAX_QS}</span>
+        <button class="speak-btn" onclick="vbSpeak(${JSON.stringify(p.question)})" aria-label="Read question aloud"><i class="ti ti-volume"></i> Hear</button>
+      </div>
+      <div class="q-text">${p.question}</div>
+      <div class="q-opts">${p.options.map(o => `<button class="q-opt" onclick="ansQ(this,'${p.question.replace(/'/g,"\\'").replace(/"/g,"&quot;")}','${o.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')"> ${o}</button>`).join('')}</div>
+    </div>`;
+}
+async function ansQ(btn, q, a) {
+  qaHistory.push({ q, a }); btn.classList.add('answered');
+  document.querySelectorAll('.q-opt').forEach(b => { if (b !== btn) b.disabled = true; });
+  await new Promise(r => setTimeout(r, 300));
+  await fetchNextQ();
+}
+function skipToAnalysis() { goScreen('s4'); runAnalysis(); }
+
+// ── ANALYSIS ──
+function buildASys() {
+  const g = GEO[geo] || GEO.other;
+  const inst = {
+    patient: `You are a medical information assistant for VKRMed by VKR Global, speaking to a patient/carer in ${g.label}. Plain English throughout. Reassuring but honest. Use local drug names (${g.drug}). Triage references use local emergency number (${g.emergency}) and non-emergency service (${g.nonEmergency}).`,
+    professional: `You are a clinical decision support tool for VKRMed by VKR Global, used by a medical professional in ${g.label}. Precise clinical terminology. Include ICD-10 codes. Likelihood framing. Explicit red flag criteria. Reference ${g.guideline} guidelines.`,
+    student: `You are a medical education assistant for VKRMed by VKR Global, used by a student/researcher in ${g.label}. Explain pathophysiology for each condition. Include landmark academic references. Suggest PubMed search terms. Frame as learning opportunities. Reference ${g.guideline} guidelines.`
+  };
+  return `${inst[persona]} Respond ONLY with valid JSON (no markdown):
+{"urgency":"green"|"amber"|"red","urgency_message":"one sentence","subtitle":"one sentence","conditions":[{"name":"","icd10":"code or null","likelihood":"Most likely|Possible|Less common|Must exclude","severity":"info"|"warn"|"danger","summary":"2-3 sentences appropriate to persona","action_tags":[""],"tag_colors":["g"|"a"|"r"],"pubmed_search":"search terms if student else null","key_ref":"landmark ref if student else null"}],"key_advice":"2-3 sentences","research_topics":["topic1","topic2","topic3"],"drug_options":[{"name":"Brand name e.g. Beconase","active_ingredient":"e.g. beclometasone","type":"branded"|"generic"|"otc","indication":"what it treats in plain terms","evidence_grade":"A"|"B"|"C","cost_tier":"low"|"medium"|"high","cost_example":"e.g. £6.99 / 200 doses","availability":"e.g. OTC UK pharmacies","pros":["pro1","pro2","pro3"],"cons":["con1","con2"]}]}
+Return 2-4 conditions. drug_options: 3-5 relevant OTC/prescription options for the most likely condition including at least one branded AND one generic/own-brand equivalent — e.g. Beconase vs Pirinase vs fexofenadine vs cetirizine own-brand. Include real drug names. research_topics: 3 items if student persona, else []. action_tags and tag_colors must be same length.`;
+}
+function buildAUser() {
+  const g = GEO[geo] || GEO.other;
+  let m = `Persona:${persona}. Location:${g.label}. Age:${profAge||'unknown'}. Sex:${profSex||'unspecified'}. Existing conditions:${profCond||'none'}. Symptoms:${selSyms.join(',')||'see description'}.`;
+  if (freeText) m += ` Description:"${freeText}".`;
+  if (qaHistory.length) m += ` Q&A:${qaHistory.map(q=>`Q:${q.q}→A:${q.a}`).join('|')}.`;
+  m += ' Provide differential analysis.';
+  return m;
+}
+const loadMsgs = ['Analysing your symptoms…','Checking red flags…','Compiling differential…','Searching guidelines…','Finalising analysis…'];
+const loadSteps = [
+  { label: 'Processing symptom inputs', icon: 'ti-clipboard-list' },
+  { label: 'Checking red flag criteria', icon: 'ti-alert-triangle' },
+  { label: 'Building differential diagnosis', icon: 'ti-git-branch' },
+  { label: 'Applying clinical guidelines', icon: 'ti-book-2' },
+  { label: 'Compiling recommendations', icon: 'ti-check' },
+];
+async function runAnalysis() {
+  renderChips('chips-s4');
+  let li = 0, si = 0;
+  const iv = setInterval(() => {
+    const el = document.getElementById('load-msg');
+    if (el) el.textContent = loadMsgs[li++ % loadMsgs.length];
+    const steps = document.getElementById('load-steps');
+    if (steps && si < loadSteps.length) {
+      const s = loadSteps[si++];
+      const div = document.createElement('div');
+      div.className = 'load-step done';
+      div.innerHTML = `<i class="ti ${s.icon}" style="color:var(--teal)"></i><span>${s.label}</span>`;
+      steps.appendChild(div);
+    }
+  }, 1100);
+  try {
+    const res = await fetch('/api/anthropic', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1500, system: buildASys(), messages: [{ role: 'user', content: buildAUser() }] })
+    });
+    clearInterval(iv);
+    const d = await res.json();
+    const raw = d.content.map(b => b.text || '').join('');
+    let p = robustParse(raw);
+    if (!p) { goScreen('s5'); document.getElementById('results-area').innerHTML = '<div style="color:#C0392B;font-size:13px;padding:12px;background:#FEF2F2;border-radius:8px">Could not parse response. Please try again.</div>'; return; }
+    if (p.urgency === 'red') showOverlay();
+    renderResults(p); goScreen('s5');
+  } catch (e) {
+    clearInterval(iv); goScreen('s5');
+    document.getElementById('results-area').innerHTML = '<div style="color:#C0392B;font-size:13px;padding:12px;background:#FEF2F2;border-radius:8px">Connection error. Please try again.</div>';
+  }
+}
+
+// ── EMERGENCY OVERLAY ──
+function showOverlay() {
+  const g = GEO[geo] || GEO.other;
+  document.getElementById('ov-geo').textContent = g.label;
+  document.getElementById('ov-num').textContent = g.emergency;
+  document.getElementById('overlay').style.display = 'flex';
+}
+function closeOverlay(show) {
+  document.getElementById('overlay').style.display = 'none';
+  if (show) goScreen('s5');
+}
+
+// ── RENDER RESULTS ──
+function renderResults(data) {
+  const g = GEO[geo] || GEO.other;
+  renderChips('chips-s5');
+  document.getElementById('r-sub').textContent = data.subtitle || '';
+
+  const urgIcons = { red: 'ti-alert-triangle', amber: 'ti-alert-circle', green: 'ti-circle-check' };
+  const urg = data.urgency || 'green';
+  document.getElementById('urgency-area').innerHTML = `<div class="urgency-banner ${urg}"><i class="ti ${urgIcons[urg]}"></i><div>${data.urgency_message || ''}<button class="speak-btn" style="margin-left:10px;vertical-align:middle" onclick="vbSpeak(${JSON.stringify(data.urgency_message||'')})" aria-label="Read aloud"><i class="ti ti-volume"></i> Hear</button></div></div>`;
+
+  const imap = { info: 'ti-info-circle', warn: 'ti-alert-circle', danger: 'ti-alert-triangle' };
+  document.getElementById('results-area').innerHTML = (data.conditions || []).map(c => {
+    const icd = c.icd10 ? `<span class="icd-badge">${c.icd10}</span>` : '';
+    const tags = (c.action_tags || []).map((t, i) => `<span class="tag ${(c.tag_colors || [])[i] || 'g'}">${t}</span>`).join('');
+    const ref = (persona === 'student' && c.key_ref) ? `<div class="ref-line"><i class="ti ti-book-2" style="font-size:12px;vertical-align:-1px;margin-right:4px"></i>${c.key_ref}</div>` : '';
+    const pm = (persona === 'student' && c.pubmed_search) ? `<a class="pubmed-link" href="https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(c.pubmed_search)}&sort=date" target="_blank" rel="noopener"><i class="ti ti-search" style="font-size:11px"></i>Search PubMed</a>` : '';
+    const speakText = `${c.name}. ${c.likelihood||''}. ${c.summary||''}`;
+    return `<div class="result-card"><div class="rc-head"><div class="rc-icon ${c.severity||'info'}"><i class="ti ${imap[c.severity||'info']}"></i></div><div style="flex:1"><div class="rc-title">${c.name}${icd}</div><div class="rc-likelihood">${c.likelihood||''}</div></div><button class="speak-btn" onclick="vbSpeak(${JSON.stringify(speakText)})" aria-label="Read aloud"><i class="ti ti-volume"></i></button></div><div class="rc-body">${c.summary||''}</div><div class="tags">${tags}</div>${ref}${pm}</div>`;
+  }).join('');
+
+  if (data.key_advice) {
+    document.getElementById('advice-area').innerHTML = `<div class="advice-box"><div class="advice-label">Key advice <button class="speak-btn" style="vertical-align:middle;margin-left:8px" onclick="vbSpeak(${JSON.stringify(data.key_advice)})" aria-label="Read aloud"><i class="ti ti-volume"></i> Read aloud</button></div><div class="advice-text">${data.key_advice}</div></div>`;
+  }
+  renderDrugPanelFromAnalysis(data);
+  vbAutoReadResults(data);
+
+  if (persona === 'student' && data.research_topics && data.research_topics.length) {
+    const icons = ['pm','mx','cr'];
+    const iconClass = ['ti-dna','ti-file-text','ti-clipboard-list'];
+    document.getElementById('research-area').innerHTML = `
+      <div class="research-panel">
+        <div class="rp-header">
+          <i class="ti ti-microscope" style="font-size:17px;color:var(--gold)"></i>
+          <span class="rp-header-title">Live research &amp; contribution</span>
+          <span class="rp-header-sub">Current frontiers</span>
+        </div>
+        <div class="rp-body">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">Active research areas related to your symptoms — explore, read, and contribute.</div>
+          ${data.research_topics.map((t, i) => `
+            <div class="research-item">
+              <div class="ri-icon ${icons[i%3]}"><i class="ti ${iconClass[i%3]}"></i></div>
+              <div style="flex:1">
+                <div class="ri-title" onclick="window.open('https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(t)}&sort=date','_blank')">${t}</div>
+                <div class="ri-desc">Active research area — latest publications and open peer review</div>
+                <div class="ri-links">
+                  <span class="ri-link" onclick="window.open('https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(t)}&sort=date','_blank')"><i class="ti ti-search" style="font-size:11px"></i>PubMed</span>
+                  <span class="ri-link" onclick="window.open('https://www.medrxiv.org/search/${encodeURIComponent(t)}','_blank')"><i class="ti ti-file-text" style="font-size:11px"></i>medRxiv</span>
+                  <span class="ri-link" onclick="window.open('https://www.cochranelibrary.com/search?searchBy=6&searchText=${encodeURIComponent(t)}','_blank')"><i class="ti ti-clipboard-list" style="font-size:11px"></i>Cochrane</span>
+                  <span class="ri-link" onclick="window.open('https://scholar.google.com/scholar?q=${encodeURIComponent(t)}','_blank')"><i class="ti ti-brand-google" style="font-size:11px"></i>Scholar</span>
+                </div>
+              </div>
+            </div>`).join('')}
+          <div class="contribute-strip">
+            <strong>Contribute &amp; comment:</strong> <a href="https://www.bmj.com/rapid-responses" target="_blank" rel="noopener">BMJ Rapid Responses</a> · <a href="https://www.medrxiv.org/submit" target="_blank" rel="noopener">Submit to medRxiv</a> · <a href="https://peerj.com/" target="_blank" rel="noopener">PeerJ open review</a> · <a href="https://pubpeer.com/" target="_blank" rel="noopener">PubPeer</a> · <a href="https://hypothes.is/" target="_blank" rel="noopener">Hypothes.is annotation</a>
+          </div>
+        </div>
+      </div>`;
+  } else {
+    document.getElementById('research-area').innerHTML = '';
+  }
+  renderAcademicPanel(data.conditions);
+
+  document.getElementById('res-geo-lbl').textContent = g.label;
+  const ress = RESOURCES[geo] || RESOURCES.other;
+  document.getElementById('resource-area').innerHTML = ress.map(r => `
+    <div class="res-card" onclick="window.open('${r.u}','_blank')">
+      <i class="ti ${r.i}"></i>
+      <div><div class="res-name">${r.n}</div><div class="res-desc">${r.d}</div></div>
+      <i class="ti ti-external-link res-arrow"></i>
+    </div>`).join('');
+
+  document.getElementById('export-row').innerHTML = `
+    <div class="sec-lbl" style="width:100%;margin-bottom:8px">Export</div>
+    <button class="exp-btn" onclick="exportSummary()"><i class="ti ti-download"></i>Save summary</button>
+    <button class="exp-btn" onclick="window.print()"><i class="ti ti-printer"></i>Print</button>`;
+}
+
+// ── EXPORT ──
+function exportSummary() {
+  const g = GEO[geo] || GEO.other;
+  const lines = [
+    'VKRMED SYMPTOM ANALYSIS — VKR GLOBAL',
+    'Generated: ' + new Date().toLocaleString(),
+    '',
+    'Role: ' + PERSONA_LABELS[persona],
+    'Location: ' + g.label
+  ];
+  if (profAge) lines.push('Age: ' + profAge);
+  if (profSex) lines.push('Sex: ' + profSex);
+  if (profCond) lines.push('Existing conditions: ' + profCond);
+  lines.push('', 'Symptoms: ' + (selSyms.join(', ') || freeText));
+  if (qaHistory.length) { lines.push('', 'Follow-up Q&A:'); qaHistory.forEach(q => lines.push('  Q: ' + q.q + '\n  A: ' + q.a)); }
+  lines.push('', '─── ANALYSIS ───');
+  document.querySelectorAll('.rc-title').forEach(el => lines.push('• ' + el.textContent.replace(/[A-Z]\d+\.\d+/g,'').trim()));
+  lines.push('', 'DISCLAIMER: Educational use only. Not a diagnosis.', 'Always consult a qualified clinician.', '', 'VKR Global · vkrglobal.net');
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'vkrmed-summary.txt'; a.click();
+}
+
+// ── RESET ──
+function resetAll() {
+  persona = null; geo = null; selSyms = []; freeText = '';
+  profAge = ''; profSex = ''; profCond = '';
+  qaHistory = []; qNum = 0;
+  acadMode = null; acadBoard = null; acadLevel = null; acadTopic = '';
+  dcDrugs = []; dcFiltered = []; dcConditionName = ''; dcUserRatings = {};
+  const da = document.getElementById('drug-compare-area'); if (da) da.innerHTML = '';
+  quizQs = []; quizIdx = 0; quizScore = 0; quizStreak = 0;
+  examQs = []; examAnswers = {};
+  document.querySelectorAll('.sym-btn').forEach(b => b.classList.remove('sel'));
+  ['prof-age','prof-cond'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('prof-sex').value = '';
+  document.getElementById('free-text').value = '';
+  document.getElementById('btn-s1').disabled = true;
+  ['patient','professional','student'].forEach(t => document.getElementById('ptab-'+t).classList.toggle('active', t==='patient'));
+  goScreen('s1');
+}
+// ── ROBUST JSON PARSER ──
+// Handles: backtick fences, truncated arrays, trailing commas, partial JSON
+function robustParse(raw) {
+  if (!raw) return null;
+  // Strip markdown fences
+  let s = raw.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+  // Try direct parse first
+  try { return JSON.parse(s); } catch {}
+  // Extract first JSON object
+  const objMatch = s.match(/\{[\s\S]*\}/);
+  if (objMatch) {
+    try { return JSON.parse(objMatch[0]); } catch {}
+    // Try fixing truncated JSON by closing open structures
+    let fixed = objMatch[0];
+    // Count unclosed brackets/braces
+    let braces = 0, brackets = 0, inStr = false, escaped = false;
+    for (let i = 0; i < fixed.length; i++) {
+      const c = fixed[i];
+      if (escaped) { escaped = false; continue; }
+      if (c === '\\' && inStr) { escaped = true; continue; }
+      if (c === '"') { inStr = !inStr; continue; }
+      if (!inStr) {
+        if (c === '{') braces++;
+        else if (c === '}') braces--;
+        else if (c === '[') brackets++;
+        else if (c === ']') brackets--;
+      }
+    }
+    // Remove trailing comma before closing
+    fixed = fixed.replace(/,\s*([}\]])/g, '$1');
+    // Close any open strings, arrays, objects
+    if (inStr) fixed += '"';
+    while (brackets > 0) { fixed += ']'; brackets--; }
+    while (braces > 0) { fixed += '}'; braces--; }
+    try { return JSON.parse(fixed); } catch {}
+  }
+  return null;
+}
+
+// ══════════════════════════════════════════════
+// ── ACADEMIC LEARNING MODULE ──
+// ══════════════════════════════════════════════
+
+// (state declared at top of script)
+
+// ── Render the academic entry panel in S5 (students only) ──
+function renderAcademicPanel(conditions) {
+  if (persona !== 'student') {
+    document.getElementById('academic-panel').innerHTML = '';
+    return;
+  }
+  // derive topic from top condition
+  acadTopic = (conditions && conditions[0]) ? conditions[0].name : (selSyms[0] || freeText.slice(0, 40) || 'symptoms');
+
+  document.getElementById('academic-panel').innerHTML = `
+    <div class="acad-entry-panel">
+      <div class="aep-header">
+        <div class="aep-header-left">
+          <i class="ti ti-school" style="font-size:18px;color:var(--gold);"></i>
+          <div>
+            <div class="aep-header-title">Academic Learning Mode</div>
+            <div class="aep-header-sub">Test your knowledge on: <strong style="color:rgba(255,255,255,.75)">${acadTopic}</strong></div>
+          </div>
+        </div>
+        <div class="aep-badges">
+          <span class="aep-badge">Quiz</span>
+          <span class="aep-badge">Exam Practice</span>
+          <span class="aep-badge">AI Marking</span>
+        </div>
+      </div>
+      <div class="aep-body">
+        <button class="aep-mode-btn" onclick="launchAcad('quiz')">
+          <div class="aep-mode-icon quiz"><i class="ti ti-trophy"></i></div>
+          <div>
+            <div class="aep-mode-title">Quick Quiz</div>
+            <div class="aep-mode-desc">10 AI questions, scored with points &amp; streak</div>
+          </div>
+        </button>
+        <button class="aep-mode-btn" onclick="launchAcad('exam')">
+          <div class="aep-mode-icon exam"><i class="ti ti-certificate"></i></div>
+          <div>
+            <div class="aep-mode-title">Exam Practice</div>
+            <div class="aep-mode-desc">Select your board, get past-paper questions, AI marking</div>
+          </div>
+        </button>
+      </div>
+    </div>`;
+}
+
+function launchAcad(mode) {
+  acadMode = mode;
+  renderChips('chips-s6');
+  document.getElementById('acad-topic').textContent = acadTopic;
+  // pre-select mode on S6
+  selectAcadMode(mode);
+  goScreen('s6');
+}
+
+// ── S6: Mode & board selection ──
+function selectAcadMode(mode) {
+  acadMode = mode;
+  document.querySelectorAll('.acad-mode-card').forEach(c => c.classList.remove('sel'));
+  const card = document.getElementById('card-' + mode);
+  if (card) card.classList.add('sel');
+  const examSection = document.getElementById('exam-board-section');
+  if (examSection) examSection.style.display = mode === 'exam' ? 'block' : 'none';
+  checkAcadReady();
+}
+function selBoard(el) {
+  document.querySelectorAll('.board-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  acadBoard = el.dataset.board;
+  checkAcadReady();
+}
+function selLevel(el) {
+  document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  acadLevel = el.dataset.level;
+  checkAcadReady();
+}
+function checkAcadReady() {
+  const ok = acadMode === 'quiz' || (acadMode === 'exam' && acadBoard && acadLevel);
+  const btn = document.getElementById('btn-start-acad');
+  if (btn) btn.disabled = !ok;
+}
+function startAcademic() {
+  if (acadMode === 'quiz') startQuiz();
+  else startExam();
+}
+
+// ══════════════════════════════════════════════
+// ── QUIZ MODE ──
+// ══════════════════════════════════════════════
+
+async function startQuiz() {
+  quizQs = []; quizIdx = 0; quizScore = 0; quizStreak = 0; quizAnswered = false;
+  goScreen('s7');
+  document.getElementById('quiz-topic-lbl').textContent = acadTopic;
+  document.getElementById('quiz-score').textContent = '0';
+  document.getElementById('quiz-streak').textContent = '0';
+  document.getElementById('quiz-qtotal').textContent = '10';
+  document.getElementById('quiz-area').innerHTML = '';
+  document.getElementById('quiz-feedback').style.display = 'none';
+  document.getElementById('quiz-nav').style.display = 'none';
+  await fetchQuizBatch();
+}
+
+async function fetchQuizBatch() {
+  document.getElementById('quiz-loading').style.display = 'block';
+  document.getElementById('quiz-area').innerHTML = '';
+
+  const isSchool = learnerTrack === 'school';
+  const boardDesc = isSchool
+    ? `${acadBoard} (subject: ${schoolSubject}, year: ${schoolYear})`
+    : acadBoard;
+  const levelDesc = isSchool ? schoolYear : (acadLevel || 'university');
+  const subjectCtx = isSchool ? `Subject: ${schoolSubject}. ` : 'Medical subject. ';
+
+  const sys = `You are an exam question generator for VKRMed by VKR Global. ${subjectCtx}Exam board: ${boardDesc}. Level: ${levelDesc}. Location: ${(GEO[geo] || GEO.other).label}.
+Generate exactly 10 multiple-choice quiz questions on the topic provided, styled authentically to the ${boardDesc} specification.
+${isSchool ? `Questions MUST match the exact syllabus content, terminology and command words used by ${acadBoard}. Use age-appropriate language for ${schoolYear} students. Include both recall and application questions in the ratio typical of this board.` : `Questions MUST reflect the clinical style, vignette format and difficulty of ${acadBoard}. Include pathophysiology, clinical presentation, investigations and management questions.`}
+Each question must have exactly 4 options (A–D), one correct answer, and a brief explanation.
+Vary difficulty: 3 easy, 4 medium, 3 hard. Points: easy=5pts, medium=10pts, hard=15pts.
+Return ONLY valid JSON, no markdown:
+{"questions":[{"q":"question text","options":["A. ...","B. ...","C. ...","D. ..."],"correct":0,"explanation":"clear explanation — why correct, what each distractor tests","points":10}]}`;
+
+  try {
+    const res = await fetch('/api/anthropic', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, system: sys,
+        messages: [{ role: 'user', content: `Generate 10 quiz questions on: ${acadTopic}. Board: ${boardDesc}. Level: ${levelDesc}. ${subjectCtx}` }] })
+    });
+    const d = await res.json();
+    const raw = d.content.map(b => b.text || '').join('');
+    let p = robustParse(raw);
+    document.getElementById('quiz-loading').style.display = 'none';
+    if (!p || !p.questions || !p.questions.length) {
+      document.getElementById('quiz-area').innerHTML = '<div class="error-msg">Could not load questions. Please try again.</div>';
+      return;
+    }
+    quizQs = p.questions;
+    document.getElementById('quiz-qtotal').textContent = quizQs.length;
+    renderQuizQ();
+  } catch {
+    document.getElementById('quiz-loading').style.display = 'none';
+    document.getElementById('quiz-area').innerHTML = '<div class="error-msg">Connection error. Please try again.</div>';
+  }
+}
+
+function renderQuizQ() {
+  if (quizIdx >= quizQs.length) { showQuizResults(); return; }
+  const q = quizQs[quizIdx];
+  quizAnswered = false;
+  const pct = Math.round((quizIdx / quizQs.length) * 100);
+  document.getElementById('quiz-prog').style.width = pct + '%';
+  document.getElementById('quiz-qnum').textContent = quizIdx + 1;
+  document.getElementById('quiz-feedback').style.display = 'none';
+  document.getElementById('quiz-nav').style.display = 'none';
+
+  const letters = ['A','B','C','D'];
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="quiz-q-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:11px;color:var(--text-muted);font-weight:500;">Question ${quizIdx+1} of ${quizQs.length}</span>
+        <span style="font-size:11px;font-weight:600;color:var(--teal);">+${q.points || 10} pts</span>
+      </div>
+      <div class="quiz-q-text">${q.q}</div>
+      <div class="quiz-opts">
+        ${q.options.map((o, i) => `
+          <button class="quiz-opt" data-idx="${i}" onclick="answerQuiz(this, ${i}, ${q.correct}, ${q.points||10})">
+            <span class="quiz-opt-letter">${letters[i]}</span>
+            <span>${o.replace(/^[A-D]\.\s*/,'')}</span>
+          </button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function answerQuiz(btn, chosen, correct, pts) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQs[quizIdx];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(b => b.disabled = true);
+
+  const isCorrect = chosen === correct;
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  opts[correct].classList.add(isCorrect ? 'correct' : 'reveal');
+
+  if (isCorrect) {
+    quizScore += pts;
+    quizStreak++;
+    const bonus = quizStreak >= 3 ? Math.floor(pts * 0.5) : 0;
+    if (bonus) quizScore += bonus;
+    document.getElementById('quiz-score').textContent = quizScore;
+    document.getElementById('quiz-streak').textContent = quizStreak;
+  } else {
+    quizStreak = 0;
+    document.getElementById('quiz-streak').textContent = '0';
+  }
+
+  const fb = document.getElementById('quiz-feedback');
+  fb.className = 'quiz-feedback-box ' + (isCorrect ? 'correct' : 'wrong');
+  const streakMsg = (isCorrect && quizStreak >= 3) ? ` 🔥 ${quizStreak} streak — bonus ${Math.floor(pts*0.5)} pts!` : '';
+  const fbText = `${isCorrect ? 'Correct!' : 'Incorrect.'} ${q.explanation || ''}`;
+  fb.innerHTML = `<strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect.'}</strong>${streakMsg}<br>${q.explanation || ''}<br><button class="speak-btn" style="margin-top:6px" onclick="vbSpeak(${JSON.stringify(fbText)})" aria-label="Read feedback aloud"><i class="ti ti-volume"></i> Read feedback</button>`;
+  fb.style.display = 'block';
+  vbAutoReadFeedback(fbText);
+  document.getElementById('quiz-nav').style.display = 'flex';
+
+  const nextBtn = document.getElementById('btn-quiz-next');
+  if (nextBtn) nextBtn.textContent = quizIdx + 1 >= quizQs.length ? 'See results →' : 'Next question →';
+}
+
+function nextQuizQ() {
+  quizIdx++;
+  renderQuizQ();
+}
+
+function showQuizResults() {
+  document.getElementById('quiz-prog').style.width = '100%';
+  const total = quizQs.reduce((s, q) => s + (q.points || 10), 0);
+  const pct = Math.round((quizScore / total) * 100);
+  let grade, gradeColor;
+  if (pct >= 80) { grade = 'Distinction'; gradeColor = '#16A34A'; }
+  else if (pct >= 65) { grade = 'Merit'; gradeColor = var_teal(); }
+  else if (pct >= 50) { grade = 'Pass'; gradeColor = '#D97706'; }
+  else { grade = 'Needs revision'; gradeColor = '#DC2626'; }
+
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="quiz-results-card">
+      <div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:6px;">Quiz complete — ${acadTopic}</div>
+      <div class="qrc-score">${quizScore}</div>
+      <div class="qrc-label">points earned out of ${total}</div>
+      <div class="qrc-grade" style="color:${gradeColor}">${grade} — ${pct}%</div>
+      <div class="qrc-breakdown">
+        <div class="qrc-stat"><div class="qrc-stat-num">${quizQs.length}</div><div class="qrc-stat-lbl">Questions</div></div>
+        <div class="qrc-stat"><div class="qrc-stat-num" style="color:var(--gold)">${quizStreak}</div><div class="qrc-stat-lbl">Best streak</div></div>
+        <div class="qrc-stat"><div class="qrc-stat-num">${pct}%</div><div class="qrc-stat-lbl">Score</div></div>
+      </div>
+    </div>`;
+  document.getElementById('quiz-feedback').style.display = 'none';
+  document.getElementById('quiz-nav').innerHTML = `
+    <button class="btn-primary" onclick="startQuiz()">Retry quiz →</button>
+    <button class="btn-secondary" onclick="goScreen('s6')">Try exam mode</button>
+    <button class="btn-secondary" onclick="goScreen('s5')">← Back to analysis</button>`;
+  document.getElementById('quiz-nav').style.display = 'flex';
+}
+function var_teal() { return '#0D7A6B'; }
+
+// ══════════════════════════════════════════════
+// ── EXAM MODE ──
+// ══════════════════════════════════════════════
+
+async function startExam() {
+  examQs = []; examAnswers = {};
+  goScreen('s8');
+  document.getElementById('exam-board-lbl').textContent = acadBoard;
+  document.getElementById('exam-board-lbl2').textContent = acadBoard;
+  document.getElementById('exam-level-lbl').textContent = acadLevel;
+  document.getElementById('exam-topic-lbl').textContent = acadTopic;
+  document.getElementById('exam-area').innerHTML = '';
+  document.getElementById('exam-submit-row').style.display = 'none';
+  document.getElementById('exam-loading').style.display = 'block';
+
+  const msgs = ['Generating exam questions…','Applying marking scheme style…','Setting paper difficulty…'];
+  let mi = 0;
+  const iv = setInterval(() => { const el = document.getElementById('exam-load-msg'); if(el) el.textContent = msgs[mi++ % msgs.length]; }, 1400);
+
+  const isSchool = learnerTrack === 'school';
+  const boardDesc = isSchool ? `${acadBoard}` : acadBoard;
+  const levelDesc = isSchool ? (schoolYear || acadLevel) : acadLevel;
+  const subjectCtx = isSchool ? `Subject: ${schoolSubject}. ` : '';
+
+  const sys = `You are a past-paper exam question generator for VKRMed by VKR Global. ${subjectCtx}Exam board: ${boardDesc}. Level: ${levelDesc}. Topic: ${acadTopic}.
+Generate exactly 5 structured exam questions styled authentically to ${boardDesc}.
+${isSchool
+  ? `SCHOOL EXAM STYLE: Use the exact question types, command words (describe, explain, evaluate, calculate, compare), and mark allocations typical of ${acadBoard} ${schoolSubject}. Include structured questions with part (a), (b), (c) where appropriate. Marking scheme must reflect how the actual board awards marks — specific creditworthy points, max marks per sub-part.`
+  : `MEDICAL BOARD STYLE: Mix question types: short answer (2–4 marks), extended matching (4–6 marks), one essay/SAQ (8–10 marks). Include clinical vignettes. Marking scheme must be specific and clinically accurate.`}
+Each question must have a detailed marking scheme listing every mark-earning point.
+Return ONLY valid JSON, no markdown:
+{"questions":[{"num":1,"type":"Structured|Short Answer|Essay|Extended Matching","stem":"full question text","marks":4,"guidance":"what a good answer covers","marking_scheme":["creditworthy point 1 (1 mark)","creditworthy point 2 (1 mark)","creditworthy point 3 (1 mark)","creditworthy point 4 (1 mark)"]}]}`;
+
+  try {
+    const res = await fetch('/api/anthropic', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, system: sys,
+        messages: [{ role: 'user', content: `Generate ${boardDesc} exam questions on: ${acadTopic}. Level: ${levelDesc}. ${subjectCtx}` }] })
+    });
+    clearInterval(iv);
+    const d = await res.json();
+    const raw = d.content.map(b => b.text || '').join('');
+    let p = robustParse(raw);
+    document.getElementById('exam-loading').style.display = 'none';
+    if (!p || !p.questions || !p.questions.length) {
+      document.getElementById('exam-area').innerHTML = '<div class="error-msg">Could not generate questions. Please try again.</div>';
+      return;
+    }
+    examQs = p.questions;
+    renderExamPaper();
+  } catch {
+    clearInterval(iv);
+    document.getElementById('exam-loading').style.display = 'none';
+    document.getElementById('exam-area').innerHTML = '<div class="error-msg">Connection error. Please try again.</div>';
+  }
+}
+
+function renderExamPaper() {
+  const totalMarks = examQs.reduce((s, q) => s + (q.marks || 0), 0);
+  document.getElementById('exam-area').innerHTML = `
+    <div style="background:var(--slate);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--text-secondary);">
+      <strong style="color:var(--text-primary)">${acadBoard} — ${acadLevel} Examination Paper</strong><br>
+      Topic: ${acadTopic} · Total marks: ${totalMarks} · Questions: ${examQs.length}<br>
+      <span style="color:var(--text-muted)">Write your answers in full. The AI will mark each answer against the marking scheme.</span>
+    </div>
+    ${examQs.map((q, i) => `
+      <div class="exam-q-block">
+        <div class="eq-num" style="display:flex;align-items:center;justify-content:space-between;">
+          <span>Question ${q.num || i+1} — ${q.type || 'Short Answer'}</span>
+          <button class="speak-btn" onclick="vbSpeak(${JSON.stringify((q.stem||'') + (q.guidance ? '. Guidance: '+q.guidance : ''))})" aria-label="Read question aloud"><i class="ti ti-volume"></i> Hear</button>
+        </div>
+        <div class="eq-stem">${q.stem}</div>
+        <div class="eq-marks">[${q.marks} mark${q.marks !== 1 ? 's' : ''}]</div>
+        ${q.guidance ? `<div class="eq-guidance">Guidance: ${q.guidance}</div>` : ''}
+        <div class="voice-input-wrap" style="position:relative;">
+          <textarea class="eq-input" id="exam-ans-${i}" rows="${q.type === 'Essay' ? 8 : 4}" placeholder="Write or speak your answer…" oninput="checkExamReady()" style="padding-right:44px;"></textarea>
+          <button class="mic-btn" id="mic-exam-${i}" onclick="vbStartRecording('exam-ans-${i}',this)" title="Speak your answer" aria-label="Voice input for answer ${i+1}"><i class="ti ti-microphone"></i></button>
+        </div>
+        <div id="transcript-exam-ans-${i}" style="display:none;" class="transcript-strip">
+          <i class="ti ti-microphone"></i><span id="transcript-exam-ans-${i}-text">Listening…</span>
+        </div>
+      </div>`).join('')}`;
+
+  document.getElementById('exam-submit-row').style.display = 'flex';
+}
+
+function checkExamReady() {
+  // enable submit once at least one answer is non-empty
+  const hasAny = examQs.some((_, i) => {
+    const el = document.getElementById('exam-ans-' + i);
+    return el && el.value.trim().length > 0;
+  });
+  const btn = document.querySelector('#exam-submit-row .btn-gold');
+  if (btn) btn.disabled = !hasAny;
+}
+
+async function submitExam() {
+  // collect answers
+  examAnswers = {};
+  examQs.forEach((q, i) => {
+    const el = document.getElementById('exam-ans-' + i);
+    examAnswers[i] = el ? el.value.trim() : '';
+  });
+
+  goScreen('s8');
+  document.getElementById('exam-area').innerHTML = '';
+  document.getElementById('exam-submit-row').style.display = 'none';
+  document.getElementById('exam-loading').style.display = 'block';
+  document.getElementById('exam-load-msg').textContent = 'Marking your answers…';
+
+  const isSchoolMark = learnerTrack === 'school';
+  const sys = `You are an expert examiner for ${acadBoard} at ${acadLevel} level, marking student answers on the topic of ${acadTopic}${isSchoolMark ? ` (subject: ${schoolSubject})` : ''}.
+Mark each answer strictly against the provided marking scheme. Award marks for each creditworthy point the student demonstrates. ${isSchoolMark ? `Apply ${acadBoard} marking conventions — accept alternative correct answers, apply error carried forward where appropriate, reward the relevant command word (describe/explain/evaluate/calculate).` : `Be clinically rigorous. Partial credit where understanding is demonstrated.`}
+Return ONLY valid JSON, no markdown:
+{"results":[{"q_num":1,"marks_awarded":2,"marks_available":4,"points_awarded":["point text ✓"],"points_missed":["missed point — student did not mention X"],"feedback":"detailed examiner feedback — what was good, what was missed, how to improve","grade":"Excellent|Good|Satisfactory|Needs improvement"}],"total_awarded":6,"total_available":20,"overall_grade":"Distinction|Merit|Pass|Fail","examiner_comments":"overall feedback on the script with specific revision recommendations"}`;
+
+  const userMsg = examQs.map((q, i) => `Q${q.num||i+1} [${q.marks}m] — ${q.stem}\nMarking scheme: ${(q.marking_scheme||[]).join(' | ')}\nStudent answer: ${examAnswers[i] || '(no answer provided)'}`).join('\n\n');
+
+  try {
+    const res = await fetch('/api/anthropic', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 4000, system: sys,
+        messages: [{ role: 'user', content: userMsg }] })
+    });
+    const d = await res.json();
+    const raw = d.content.map(b => b.text || '').join('');
+    let p = robustParse(raw);
+    document.getElementById('exam-loading').style.display = 'none';
+    if (!p || !p.results) {
+      document.getElementById('exam-area').innerHTML = '<div class="error-msg">Marking failed. Please try again.</div>';
+      document.getElementById('exam-submit-row').style.display = 'flex';
+      return;
+    }
+    renderMarkingResults(p);
+    goScreen('s9');
+  } catch {
+    document.getElementById('exam-loading').style.display = 'none';
+    document.getElementById('exam-area').innerHTML = '<div class="error-msg">Connection error. Please try again.</div>';
+    document.getElementById('exam-submit-row').style.display = 'flex';
+  }
+}
+
+function renderMarkingResults(data) {
+  document.getElementById('mark-board-lbl').textContent = acadBoard + ' ' + acadLevel;
+
+  const pct = data.total_available ? Math.round((data.total_awarded / data.total_available) * 100) : 0;
+  const gradeColor = pct >= 80 ? '#16A34A' : pct >= 65 ? '#0D7A6B' : pct >= 50 ? '#D97706' : '#DC2626';
+
+  document.getElementById('mark-summary-bar').innerHTML = `
+    <div class="mark-summary">
+      <div class="ms-score-block">
+        <div class="ms-total">${data.total_awarded}</div>
+        <div class="ms-outof">/ ${data.total_available} marks</div>
+      </div>
+      <div class="ms-divider"></div>
+      <div class="ms-stats">
+        <div class="ms-stat"><div class="ms-stat-num" style="color:${gradeColor}">${pct}%</div><div class="ms-stat-lbl">Score</div></div>
+        <div class="ms-stat"><div class="ms-stat-num" style="color:var(--gold)">${data.overall_grade || '—'}</div><div class="ms-stat-lbl">Grade</div></div>
+        <div class="ms-stat"><div class="ms-stat-num">${(data.results||[]).length}</div><div class="ms-stat-lbl">Questions</div></div>
+      </div>
+    </div>`;
+
+  document.getElementById('marking-area').innerHTML = (data.results || []).map((r, i) => {
+    const q = examQs[i] || {};
+    const pctQ = r.marks_available ? Math.round((r.marks_awarded / r.marks_available) * 100) : 0;
+    const pillClass = pctQ === 100 ? 'full' : pctQ >= 50 ? 'partial' : 'zero';
+    const awarded = r.points_awarded || [];
+    const missed = r.points_missed || [];
+
+    return `<div class="mark-card">
+      <div class="mark-card-head">
+        <div>
+          <div class="mark-q-label">Question ${r.q_num || i+1} — ${q.type || ''}</div>
+          <div class="mark-q-text">${q.stem || ''}</div>
+        </div>
+        <span class="mark-score-pill ${pillClass}">${r.marks_awarded} / ${r.marks_available} marks</span>
+      </div>
+      <div class="mark-section">
+        <div class="mark-section-lbl">Your answer</div>
+        <div class="mark-student-ans">${(examAnswers[i] || '(no answer)').replace(/\n/g,'<br>')}</div>
+      </div>
+      ${awarded.length ? `<div class="mark-section">
+        <div class="mark-section-lbl" style="color:#166534">✓ Mark points awarded</div>
+        <div class="mark-scheme">${awarded.map(p => `• ${p}`).join('<br>')}</div>
+      </div>` : ''}
+      ${missed.length ? `<div class="mark-section">
+        <div class="mark-section-lbl" style="color:#991B1B">✗ Points missed</div>
+        <div style="font-size:13px;color:#991B1B;background:#FEF2F2;border:1px solid #FECACA;border-radius:var(--radius-sm);padding:8px 11px;line-height:1.5;">${missed.map(p => `• ${p}`).join('<br>')}</div>
+      </div>` : ''}
+      <div class="mark-section">
+        <div class="mark-section-lbl">Examiner feedback</div>
+        <div class="mark-feedback">${r.feedback || ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('mark-advice-area').innerHTML = data.examiner_comments ? `
+    <div class="mark-overall-advice">
+      <div class="moa-label">Examiner's overall comments <button class="speak-btn" style="vertical-align:middle;margin-left:8px;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.7);" onclick="vbSpeak(${JSON.stringify(data.examiner_comments)})" aria-label="Read examiner comments aloud"><i class="ti ti-volume"></i> Read aloud</button></div>
+      <div class="moa-text">${data.examiner_comments}</div>
+    </div>` : '';
+  // Auto-read overall grade if TTS on
+  if (VB.ttsEnabled && data.total_awarded !== undefined) {
+    const pct = data.total_available ? Math.round((data.total_awarded/data.total_available)*100) : 0;
+    vbDoSpeak(`Marking complete. You scored ${data.total_awarded} out of ${data.total_available} marks, ${pct} percent. Grade: ${data.overall_grade || ''}. ${data.examiner_comments || ''}`);
+  }
+}
+
+// ══════════════════════════════════════════════
+// ── SCHOOL BOARD DATA ──
+// ══════════════════════════════════════════════
+
+const SCHOOL_BOARDS = {
+  uk: {
+    boards: [
+      { id:'aqa',      name:'AQA',           sub:'Assessment & Qualifications Alliance',  flag:'🇬🇧' },
+      { id:'edexcel',  name:'Edexcel/Pearson',sub:'Pearson Edexcel',                      flag:'🇬🇧' },
+      { id:'ocr',      name:'OCR',            sub:'Oxford, Cambridge & RSA',               flag:'🇬🇧' },
+      { id:'igcse',    name:'Cambridge IGCSE', sub:'Cambridge Assessment International',   flag:'🇬🇧' },
+      { id:'ib',       name:'IB (UK centres)',sub:'International Baccalaureate',           flag:'🌐' },
+      { id:'wjec',     name:'WJEC / Eduqas', sub:'Wales & England',                       flag:'🏴󠁧󠁢󠁷󠁬󠁳󠁿' },
+      { id:'ccea',     name:'CCEA',           sub:'Northern Ireland',                      flag:'🇬🇧' },
+      { id:'sqa',      name:'SQA',            sub:'Scottish Qualifications Authority',     flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿' },
+    ],
+    years: [
+      'KS3 — Year 7–9 (age 11–14)',
+      'GCSE — Year 10–11 (age 14–16)',
+      'A-Level Year 12 (AS)',
+      'A-Level Year 13 (A2)',
+    ],
+    subjects: ['Biology','Chemistry','Physics','Human Biology','Psychology','PE / Sport Science','Health & Social Care','Combined Science'],
+  },
+  sg: {
+    boards: [
+      { id:'seab_psle', name:'PSLE',           sub:'Primary School Leaving Exam — SEAB',  flag:'🇸🇬' },
+      { id:'seab_olevel',name:'O-Level',       sub:'GCE O-Level — SEAB / Cambridge',      flag:'🇸🇬' },
+      { id:'seab_alevel',name:'A-Level',       sub:'GCE A-Level — SEAB / Cambridge',      flag:'🇸🇬' },
+      { id:'ib_sg',      name:'IB Diploma',    sub:'IB — Singapore international schools',flag:'🌐' },
+      { id:'igcse_sg',   name:'IGCSE',         sub:'Cambridge IGCSE — Singapore',          flag:'🇸🇬' },
+    ],
+    years: [
+      'Primary 4–6 (PSLE prep, age 10–12)',
+      'Lower Secondary (Sec 1–2, age 13–14)',
+      'Upper Secondary O-Level (Sec 3–4, age 15–16)',
+      'Junior College / A-Level (JC1–2, age 17–18)',
+    ],
+    subjects: ['Biology','Chemistry','Physics','Combined Science','Health Sciences','Psychology'],
+  },
+  us: {
+    boards: [
+      { id:'ap_bio',   name:'AP Biology',      sub:'College Board Advanced Placement',    flag:'🇺🇸' },
+      { id:'ap_chem',  name:'AP Chemistry',    sub:'College Board Advanced Placement',    flag:'🇺🇸' },
+      { id:'ap_phys',  name:'AP Physics',      sub:'College Board Advanced Placement',    flag:'🇺🇸' },
+      { id:'ap_psych', name:'AP Psychology',   sub:'College Board Advanced Placement',    flag:'🇺🇸' },
+      { id:'sat2_bio', name:'SAT Subject — Bio',sub:'College Board SAT Subject Test',     flag:'🇺🇸' },
+      { id:'ngss',     name:'NGSS / State',    sub:'Next Gen Science Standards + state boards', flag:'🇺🇸' },
+      { id:'ib_us',    name:'IB Diploma',      sub:'IB — US international schools',       flag:'🌐' },
+    ],
+    years: [
+      'Middle School (Grades 6–8, age 11–14)',
+      'Freshman / Sophomore (Grades 9–10, age 14–16)',
+      'Junior (Grade 11, age 16–17)',
+      'Senior / AP Year (Grade 12, age 17–18)',
+    ],
+    subjects: ['Biology','Chemistry','Physics','Anatomy & Physiology','Psychology','Health Science','Environmental Science'],
+  },
+  aus: {
+    boards: [
+      { id:'vcaa',   name:'VCAA (VCE)',        sub:'Victorian Curriculum & Assessment Authority', flag:'🇦🇺' },
+      { id:'nesa',   name:'NESA (HSC)',         sub:'NSW Education Standards Authority',           flag:'🇦🇺' },
+      { id:'qcaa',   name:'QCAA (QCE)',         sub:'Queensland Curriculum & Assessment Authority',flag:'🇦🇺' },
+      { id:'scasa',  name:'SCSA (WACE)',        sub:'School Curriculum & Standards Authority, WA', flag:'🇦🇺' },
+      { id:'sace',   name:'SACE',               sub:'South Australian Certificate of Education',   flag:'🇦🇺' },
+      { id:'ncea',   name:'NCEA (NZ)',           sub:'NZ Qualifications Authority',                 flag:'🇳🇿' },
+      { id:'ib_aus', name:'IB Diploma',          sub:'IB — Australian international schools',       flag:'🌐' },
+      { id:'igcse_aus',name:'IGCSE',            sub:'Cambridge IGCSE — Australia',                 flag:'🇦🇺' },
+    ],
+    years: [
+      'Junior Secondary (Yrs 7–9 / NCEA Level prep)',
+      'Year 10 / NCEA Level 1',
+      'Year 11 / NCEA Level 2 / VCE Unit 1–2',
+      'Year 12 / NCEA Level 3 / VCE Unit 3–4 (ATAR)',
+    ],
+    subjects: ['Biology','Chemistry','Physics','Human Biology','Psychology','PE & Health','Marine & Environmental Science'],
+  },
+  eu: {
+    boards: [
+      { id:'ib_eu',    name:'IB Diploma',       sub:'International Baccalaureate',              flag:'🌐' },
+      { id:'igcse_eu', name:'Cambridge IGCSE',  sub:'Cambridge Assessment International',       flag:'🌐' },
+      { id:'eb',       name:'European Baccalaureate', sub:'Schools of the European Union',      flag:'🇪🇺' },
+      { id:'abitur',   name:'Abitur (Germany)',  sub:'German secondary school leaving certificate',flag:'🇩🇪' },
+      { id:'bac_fr',   name:'Baccalauréat (France)',sub:'French national qualification',        flag:'🇫🇷' },
+      { id:'matura',   name:'Matura',            sub:'Central Europe — Austria, Switzerland, Poland', flag:'🇪🇺' },
+    ],
+    years: [
+      'Lower Secondary (age 11–14)',
+      'Upper Secondary Yr 1 (age 15–16)',
+      'Upper Secondary Yr 2 (age 16–17)',
+      'Final Year / Baccalaureate (age 17–18)',
+    ],
+    subjects: ['Biology','Chemistry','Physics','Life Sciences','Psychology','Health & Wellbeing','Environmental Science'],
+  },
+  canada: {
+    boards: [
+      { id:'bc',      name:'BC Curriculum',    sub:'British Columbia Ministry of Education',     flag:'🇨🇦' },
+      { id:'ontario', name:'Ontario Curriculum',sub:'Ontario Ministry of Education',             flag:'🇨🇦' },
+      { id:'alberta', name:'Alberta Curriculum',sub:'Alberta Education',                         flag:'🇨🇦' },
+      { id:'ap_ca',   name:'AP (Canada)',       sub:'College Board AP — Canadian schools',        flag:'🇨🇦' },
+      { id:'ib_ca',   name:'IB Diploma',        sub:'IB — Canadian international schools',       flag:'🌐' },
+      { id:'igcse_ca',name:'Cambridge IGCSE',   sub:'Cambridge — Canadian international schools',flag:'🌐' },
+    ],
+    years: [
+      'Junior High (Grades 7–9, age 12–14)',
+      'Grade 10 (age 15–16)',
+      'Grade 11 (age 16–17)',
+      'Grade 12 (age 17–18)',
+    ],
+    subjects: ['Biology','Chemistry','Physics','Life Sciences','Psychology','Health & Careers','Environmental Science'],
+  },
+  other: {
+    boards: [
+      { id:'ib_gen',    name:'IB Diploma',         sub:'International Baccalaureate',              flag:'🌐' },
+      { id:'igcse_gen', name:'Cambridge IGCSE',    sub:'Cambridge Assessment International',       flag:'🌐' },
+      { id:'ial',       name:'Cambridge IAL',       sub:'International A-Level (Edexcel/Pearson)',  flag:'🌐' },
+      { id:'generic',   name:'Generic School Exam', sub:'Standard secondary school curriculum',    flag:'🎓' },
+    ],
+    years: [
+      'Lower Secondary (age 11–13)',
+      'Middle Secondary (age 14–15)',
+      'Upper Secondary Yr 1 (age 16–17)',
+      'Upper Secondary Final (age 17–18)',
+    ],
+    subjects: ['Biology','Chemistry','Physics','Combined Science','Psychology','Health Science'],
+  }
+};
+
+// Topics by subject for quick-select chips
+const SCHOOL_TOPICS = {
+  'Biology':             ['Cell Biology','Photosynthesis','Respiration','DNA & Genetics','Natural Selection','Homeostasis','Transport in Plants','Digestion','Nervous System','Immune System','Ecology','Human Reproduction'],
+  'Chemistry':           ['Atomic Structure','Bonding','Electrolysis','Rates of Reaction','Organic Chemistry','Acids & Bases','Equilibrium','Electrochemistry','Transition Metals','Polymers'],
+  'Physics':             ['Forces & Motion','Energy','Waves & Sound','Light & Optics','Electricity','Magnetism','Radioactivity','Space Physics','Quantum Physics','Thermodynamics'],
+  'Human Biology':       ['Body Systems','Digestion','Circulation','Respiration','Nervous System','Hormones','Reproduction','Immunity','Nutrition','Disease'],
+  'Combined Science':    ['Cell Biology','Photosynthesis','Forces','Electricity','Atomic Structure','Digestion','Waves','Genetics'],
+  'Psychology':          ['Memory','Perception','Social Influence','Psychopathology','Approaches','Research Methods','Biopsychology','Developmental Psychology'],
+  'PE / Sport Science':  ['Energy Systems','Musculoskeletal System','Cardiovascular System','Sports Psychology','Training Principles','Nutrition','Injury & Recovery'],
+  'Health & Social Care':['Health Promotion','Social Determinants','Mental Health','Life Stages','Care Values','NHS & Services'],
+  'Health & Wellbeing':  ['Mental Health','Nutrition','Physical Activity','Disease Prevention','Public Health','Substance Misuse'],
+  'Anatomy & Physiology':['Skeletal System','Muscular System','Cardiovascular','Respiratory','Nervous System','Endocrine','Renal System'],
+  'Health Science':      ['Medical Terminology','Body Systems','Disease Process','Public Health','Pharmacology Basics'],
+  'Environmental Science':['Ecosystems','Climate Change','Pollution','Biodiversity','Sustainable Development','Water Cycle'],
+  'Marine & Environmental Science': ['Marine Ecosystems','Ocean Chemistry','Climate','Biodiversity','Pollution','Conservation'],
+  'Life Sciences':       ['Cell Biology','Genetics','Evolution','Ecology','Physiology','Microbiology'],
+};
+
+const MEDICAL_TOPICS = ['Myocardial Infarction','Pneumonia','Sepsis','Stroke','Diabetes Mellitus','Asthma','Heart Failure','DVT / PE','Meningitis','Hypertension','Appendicitis','Thyroid Disorders','Renal Failure','Liver Disease','Inflammatory Bowel Disease'];
+
+// ── EARLY ACADEMIC ACCESS ──
+let learnerTrack = null;  // 'school' | 'uni'
+let schoolCountry = null;
+let schoolBoard = null;   // board object
+let schoolYear = null;
+let schoolSubject = null;
+let eaMode = null;
+
+function earlyAcadAccess() {
+  if (!geo) geo = 'uk';
+  learnerTrack = null; schoolCountry = null; schoolBoard = null;
+  schoolYear = null; schoolSubject = null; eaMode = null; acadTopic = '';
+  // Reset UI
+  ['school-config','uni-config','topic-config'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.style.display = 'none';
+  });
+  ['track-school','track-uni'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.classList.remove('sel');
+  });
+  document.querySelectorAll('#school-country-btns .level-btn').forEach(b => b.classList.remove('sel'));
+  const btn = document.getElementById('btn-ea-go'); if (btn) btn.disabled = true;
+  goScreen('s10');
+}
+
+function selectTrack(track) {
+  learnerTrack = track;
+  ['track-school','track-uni'].forEach(id => document.getElementById(id).classList.toggle('sel', id === 'track-'+track));
+  document.getElementById('school-config').style.display = track === 'school' ? 'block' : 'none';
+  document.getElementById('uni-config').style.display = track === 'uni' ? 'block' : 'none';
+  document.getElementById('topic-config').style.display = 'none';
+  if (track === 'uni') {
+    // For uni, pre-set defaults and show topic immediately after board selection
+    acadLevel = acadLevel || 'Clinical / Year 3–4';
+  }
+  checkTopicReady();
+}
+
+function selectSchoolCountry(btn) {
+  document.querySelectorAll('#school-country-btns .level-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  schoolCountry = btn.dataset.c;
+  const data = SCHOOL_BOARDS[schoolCountry] || SCHOOL_BOARDS.other;
+  // Render boards
+  document.getElementById('school-board-grid').innerHTML = data.boards.map(b =>
+    `<button class="board-btn" data-board="${b.name}" data-style="${b.name} ${b.sub}" onclick="selSchoolBoard(this,'${b.id}')">
+      <span class="board-flag">${b.flag}</span>
+      <div><div class="bb-name">${b.name}</div><div class="bb-sub">${b.sub}</div></div>
+    </button>`).join('');
+  // Render year groups
+  document.getElementById('school-year-grid').innerHTML = data.years.map(y =>
+    `<button class="level-btn" data-level="${y}" onclick="selSchoolYear(this)">${y}</button>`).join('');
+  // Render subjects
+  document.getElementById('school-subject-grid').innerHTML = data.subjects.map(s =>
+    `<button class="level-btn" data-subject="${s}" onclick="selSchoolSubject(this)">${s}</button>`).join('');
+  document.getElementById('school-boards-area').style.display = 'block';
+  // Reset downstream
+  schoolBoard = null; schoolYear = null; schoolSubject = null;
+  document.getElementById('topic-config').style.display = 'none';
+  checkTopicReady();
+}
+
+function selSchoolBoard(btn, id) {
+  document.querySelectorAll('#school-board-grid .board-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  schoolBoard = { id, name: btn.dataset.board, style: btn.dataset.style };
+  acadBoard = btn.dataset.board;
+  checkTopicReady();
+}
+
+function selSchoolYear(btn) {
+  document.querySelectorAll('#school-year-grid .level-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  schoolYear = btn.dataset.level;
+  acadLevel = schoolYear;
+  checkTopicReady();
+}
+
+function selSchoolSubject(btn) {
+  document.querySelectorAll('#school-subject-grid .level-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  schoolSubject = btn.dataset.subject;
+  acadTopic = '';
+  // Show topic config with subject-specific chips
+  const topics = SCHOOL_TOPICS[schoolSubject] || SCHOOL_TOPICS['Biology'];
+  document.getElementById('topic-quick-btns').innerHTML = topics.map(t =>
+    `<button class="level-btn" onclick="setQuickTopic(this,'${t}')">${t}</button>`).join('');
+  document.getElementById('custom-topic-input').value = '';
+  document.getElementById('custom-topic-input').placeholder = `e.g. ${topics[0]}, ${topics[1]}, ${topics[2]}…`;
+  document.getElementById('topic-config').style.display = 'block';
+  // Reset mode
+  ['ea-card-quiz','ea-card-exam'].forEach(id => { const el=document.getElementById(id); if(el) el.classList.remove('sel'); });
+  eaMode = null;
+  checkTopicReady();
+}
+
+function setQuickTopic(btn, topic) {
+  document.querySelectorAll('#topic-quick-btns .level-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('custom-topic-input').value = '';
+  acadTopic = topic;
+  checkTopicReady();
+}
+
+function checkTopicReady() {
+  const custom = document.getElementById('custom-topic-input');
+  if (custom && custom.value.trim()) {
+    acadTopic = custom.value.trim();
+    document.querySelectorAll('#topic-quick-btns .level-btn').forEach(b => b.classList.remove('sel'));
+  }
+  let ready = false;
+  if (learnerTrack === 'school') {
+    ready = !!(schoolBoard && schoolYear && schoolSubject && acadTopic && eaMode);
+  } else if (learnerTrack === 'uni') {
+    ready = !!(acadBoard && acadLevel && acadTopic && eaMode);
+  }
+  const btn = document.getElementById('btn-ea-go');
+  if (btn) btn.disabled = !ready;
+}
+
+// Show topic chips for uni track after board/level selected
+function selBoard(el) {
+  document.querySelectorAll('.board-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+  acadBoard = el.dataset.board;
+  // If we're in uni track on S10, show topic config with medical topics
+  if (learnerTrack === 'uni' && document.getElementById('s10').classList.contains('active')) {
+    document.getElementById('topic-quick-btns').innerHTML = MEDICAL_TOPICS.map(t =>
+      `<button class="level-btn" onclick="setQuickTopic(this,'${t}')">${t}</button>`).join('');
+    document.getElementById('custom-topic-input').placeholder = 'e.g. Rheumatoid Arthritis, Pulmonary Embolism, Cushing\'s Syndrome…';
+    document.getElementById('topic-config').style.display = 'block';
+    ['ea-card-quiz','ea-card-exam'].forEach(id => { const el2=document.getElementById(id); if(el2) el2.classList.remove('sel'); });
+    eaMode = null;
+  }
+  checkTopicReady();
+}
+
+function selLevel(el) {
+  document.querySelectorAll('.level-btn').forEach(b => {
+    // Only deselect level-btns that are actual level selectors (not subject/country/topic chips)
+    if (b.dataset.level) b.classList.remove('sel');
+  });
+  el.classList.add('sel');
+  acadLevel = el.dataset.level;
+  if (learnerTrack === 'uni' && acadBoard) {
+    document.getElementById('topic-quick-btns').innerHTML = MEDICAL_TOPICS.map(t =>
+      `<button class="level-btn" onclick="setQuickTopic(this,'${t}')">${t}</button>`).join('');
+    document.getElementById('topic-config').style.display = 'block';
+  }
+  checkTopicReady();
+}
+
+function selectEaMode(mode) {
+  eaMode = mode; acadMode = mode;
+  ['ea-card-quiz','ea-card-exam'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.classList.toggle('sel', id === 'ea-card-'+mode);
+  });
+  checkTopicReady();
+}
+
+function launchEarlyAcad() {
+  if (!geo) geo = 'uk';
+  if (!persona) persona = 'student';
+  acadMode = eaMode;
+  // Build a descriptive board string for the AI prompt
+  if (learnerTrack === 'school') {
+    acadBoard = `${schoolBoard.name} (${schoolSubject} — ${schoolYear})`;
+    acadLevel = schoolYear;
+  }
+  if (acadMode === 'quiz') startQuiz();
+  else startExam();
+}
+
+// ══════════════════════════════════════════════
+// ── DRUG COMPARISON MODULE ──
+// ══════════════════════════════════════════════
+
+let dcDrugs = [];          // current drug list
+let dcFiltered = [];       // after filter
+let dcCurrentSort = 'score';
+let dcCurrentFilter = 'all';
+let dcFeedbackDrug = null;
+let dcFeedbackStar = 0;
+let dcFeedbackTags = [];
+let dcConditionName = '';
+let dcUserRatings = {};    // drug name → {count, total, tags}
+
+// ── Score a drug (0–100) from its fields ──────
+function dcScore(d) {
+  const evidenceScore = { A: 35, B: 22, C: 10 }[d.evidence_grade] || 10;
+  const costScore     = { low: 30, medium: 20, high: 8 }[d.cost_tier] || 15;
+  const userScore     = dcUserScore(d.name) * 0.35;   // up to 35 pts from user ratings
+  return Math.round(evidenceScore + costScore + userScore);
+}
+
+function dcUserScore(name) {
+  const r = dcUserRatings[name];
+  if (!r || !r.count) return 20; // neutral default
+  return (r.total / r.count) * 7; // 0–5 stars * 7 = 0–35
+}
+
+// ── Render the entry panel in S5 ─────────────
+function renderDrugPanel(drugs, conditionName) {
+  dcDrugs = drugs || [];
+  dcConditionName = conditionName || '';
+  const el = document.getElementById('drug-compare-area');
+  if (!el || !dcDrugs.length) { if (el) el.innerHTML = ''; return; }
+
+  const chips = dcDrugs.slice(0, 6).map(d =>
+    `<div class="dep-drug-chip" onclick="launchDrugCompare()">
+      <i class="ti ${d.type === 'branded' ? 'ti-shield-check' : 'ti-leaf'}" aria-hidden="true"></i>
+      ${d.name}
+    </div>`).join('');
+
+  el.innerHTML = `
+    <div class="drug-entry-panel">
+      <div class="dep-header">
+        <div class="dep-header-left">
+          <i class="ti ti-pill" style="font-size:18px;color:var(--gold);"></i>
+          <div>
+            <div class="dep-header-title">Drug Comparison — ${conditionName}</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.45);">Branded vs generic · Cost · Evidence · User ratings</div>
+          </div>
+        </div>
+        <div class="dep-badges">
+          <span class="dep-badge">${dcDrugs.length} options</span>
+          <span class="dep-badge">Rate & compare</span>
+        </div>
+      </div>
+      <div class="dep-body">
+        ${chips}
+        <div class="dep-drug-chip" style="border-style:dashed;color:var(--teal);" onclick="launchDrugCompare()">
+          <i class="ti ti-arrow-right" aria-hidden="true"></i> Compare all →
+        </div>
+      </div>
+    </div>`;
+}
+
+function launchDrugCompare() {
+  // Load stored ratings from persistent storage
+  loadDcRatings().then(() => {
+    renderDcScreen();
+    goScreen('s11');
+  });
+}
+
+// ── Persistent storage for user ratings ───────
+async function loadDcRatings() {
+  try {
+    const res = await window.storage.get('dc-ratings-' + sanitiseKey(dcConditionName));
+    if (res) dcUserRatings = JSON.parse(res.value);
+  } catch { dcUserRatings = {}; }
+}
+
+async function saveDcRatings() {
+  try {
+    await window.storage.set('dc-ratings-' + sanitiseKey(dcConditionName), JSON.stringify(dcUserRatings));
+  } catch {}
+}
+
+function sanitiseKey(s) {
+  return (s || 'general').toLowerCase().replace(/[^a-z0-9]/g, '-').slice(0, 60);
+}
+
+// ── Render the full comparison screen ─────────
+function renderDcScreen() {
+  document.getElementById('dc-title').textContent = 'Drug Comparison — ' + dcConditionName;
+  document.getElementById('dc-subtitle').textContent =
+    `${dcDrugs.length} options · branded vs generic · cost · evidence · ${totalRatings()} user ratings`;
+  dcCurrentSort = 'score'; dcCurrentFilter = 'all';
+  document.querySelectorAll('.dc-sort-btn').forEach(b => b.classList.toggle('active', b.dataset.sort === 'score'));
+  document.querySelectorAll('.dc-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === 'all'));
+  dcApplyFilterSort();
+}
+
+function totalRatings() {
+  return Object.values(dcUserRatings).reduce((s, r) => s + (r.count || 0), 0);
+}
+
+function dcSort(btn, key) {
+  document.querySelectorAll('.dc-sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  dcCurrentSort = key;
+  dcApplyFilterSort();
+}
+
+function dcFilter(btn, key) {
+  document.querySelectorAll('.dc-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  dcCurrentFilter = key;
+  dcApplyFilterSort();
+}
+
+function dcApplyFilterSort() {
+  let list = [...dcDrugs];
+  if (dcCurrentFilter !== 'all') list = list.filter(d => d.type === dcCurrentFilter);
+
+  list.sort((a, b) => {
+    if (dcCurrentSort === 'score')    return dcScore(b) - dcScore(a);
+    if (dcCurrentSort === 'cost')     return ['low','medium','high'].indexOf(a.cost_tier) - ['low','medium','high'].indexOf(b.cost_tier);
+    if (dcCurrentSort === 'rating')   return dcUserScore(b.name) - dcUserScore(a.name);
+    if (dcCurrentSort === 'evidence') return 'ABC'.indexOf(a.evidence_grade) - 'ABC'.indexOf(b.evidence_grade);
+    return 0;
+  });
+
+  dcFiltered = list;
+  renderDcCards(list);
+}
+
+function renderDcCards(list) {
+  const area = document.getElementById('dc-cards-area');
+  if (!list.length) {
+    area.innerHTML = '<p style="font-size:13px;color:var(--text-muted);padding:20px 0;">No drugs match the current filter.</p>';
+    return;
+  }
+
+  const winner = list[0];
+  const winnerHTML = `
+    <div class="dc-winner-banner">
+      <i class="ti ti-trophy" aria-hidden="true"></i>
+      <div><strong>${winner.name}</strong> ranks highest for this sort — ${winner.evidence_grade === 'A' ? 'Grade A evidence' : 'strong evidence'}, ${winner.cost_tier} cost, ${dcStarsHtml(dcUserScore(winner.name)/7)} user-rated.</div>
+    </div>`;
+
+  area.innerHTML = winnerHTML + list.map(d => dcCardHTML(d)).join('');
+}
+
+function dcStarsHtml(rating) {
+  const r = Math.round(rating * 2) / 2;
+  return `<span class="dc-stars">${'★'.repeat(Math.floor(r))}${'☆'.repeat(5 - Math.floor(r))}</span>`;
+}
+
+function dcBarHTML(value, max, color) {
+  const pct = Math.round((value / max) * 100);
+  return `<div class="dc-bar-wrap"><div class="dc-bar" style="width:${pct}%;background:${color};"></div></div>`;
+}
+
+function dcCardHTML(d) {
+  const score = dcScore(d);
+  const ur = dcUserRatings[d.name];
+  const userRating = ur && ur.count ? (ur.total / ur.count).toFixed(1) : null;
+  const userCount = ur ? ur.count : 0;
+  const userTags = ur ? (ur.tags || []).slice(0, 4) : [];
+
+  const costColors = { low: '#16A34A', medium: '#D97706', high: '#DC2626' };
+  const costBars   = { low: 33, medium: 66, high: 100 };
+  const evidColors = { A: '#16A34A', B: '#1D4ED8', C: '#D97706' };
+  const evidBars   = { A: 100, B: 66, C: 33 };
+
+  const pros = (d.pros || []).map(p => `<div class="dc-pro-item">${p}</div>`).join('');
+  const cons = (d.cons || []).map(c => `<div class="dc-con-item">${c}</div>`).join('');
+
+  const reviewStrip = userTags.length
+    ? `<div class="dc-review-tags">${userTags.map(t => `<span class="dc-review-tag">${t}</span>`).join('')}</div>`
+    : `<div style="font-size:11px;color:var(--text-muted);">No user reviews yet — be the first</div>`;
+
+  return `
+    <div class="dc-card" data-type="${d.type}">
+      <div class="dc-card-header">
+        <div class="dc-drug-icon ${d.type}">
+          <i class="ti ${d.type === 'branded' ? 'ti-shield-check' : 'ti-leaf'}" aria-hidden="true"></i>
+        </div>
+        <div style="flex:1">
+          <div class="dc-drug-name">${d.name}</div>
+          <div class="dc-drug-generic">${d.active_ingredient || ''} · ${d.indication || ''}</div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px;">
+            <span class="dc-type-badge ${d.type}">${d.type === 'branded' ? 'Branded' : d.type === 'generic' ? 'Generic' : 'OTC'}</span>
+            <span class="dc-evidence ${d.evidence_grade}">Grade ${d.evidence_grade || 'B'}</span>
+            <span style="font-size:11px;color:var(--text-muted);">${d.availability || ''}</span>
+          </div>
+        </div>
+        <div class="dc-score-col">
+          <div class="dc-overall-score">${score}</div>
+          <div class="dc-score-label">/ 100</div>
+        </div>
+      </div>
+
+      <div class="dc-metrics">
+        <div class="dc-metric">
+          <div class="dc-metric-label">Cost</div>
+          <div class="dc-metric-value" style="color:${costColors[d.cost_tier]}">${d.cost_tier?.toUpperCase() || '—'}</div>
+          <div class="dc-metric-sub">${d.cost_example || ''}</div>
+          ${dcBarHTML(costBars[d.cost_tier] || 50, 100, costColors[d.cost_tier] || '#CBD5E0')}
+        </div>
+        <div class="dc-metric">
+          <div class="dc-metric-label">Evidence</div>
+          <div class="dc-metric-value" style="color:${evidColors[d.evidence_grade]}">Grade ${d.evidence_grade || 'B'}</div>
+          <div class="dc-metric-sub">${d.evidence_grade === 'A' ? 'Strong RCT evidence' : d.evidence_grade === 'B' ? 'Good clinical evidence' : 'Limited evidence'}</div>
+          ${dcBarHTML(evidBars[d.evidence_grade] || 50, 100, evidColors[d.evidence_grade] || '#CBD5E0')}
+        </div>
+        <div class="dc-metric">
+          <div class="dc-metric-label">User rating</div>
+          <div class="dc-metric-value">${userRating ? dcStarsHtml(parseFloat(userRating)) + ' ' + userRating : '—'}</div>
+          <div class="dc-metric-sub">${userCount ? userCount + ' rating' + (userCount > 1 ? 's' : '') : 'No ratings yet'}</div>
+          ${dcBarHTML(userRating ? parseFloat(userRating) * 20 : 0, 100, '#C9A84C')}
+        </div>
+        <div class="dc-metric">
+          <div class="dc-metric-label">Overall score</div>
+          <div class="dc-metric-value" style="color:var(--navy)">${score} / 100</div>
+          <div class="dc-metric-sub">Evidence + cost + ratings</div>
+          ${dcBarHTML(score, 100, 'var(--teal)')}
+        </div>
+      </div>
+
+      <div class="dc-card-body">
+        <div class="dc-pros-cons">
+          <div class="dc-pro-con-col">
+            <div class="dc-pro-con-label pros">Advantages</div>
+            ${pros || '<div class="dc-pro-item">No data</div>'}
+          </div>
+          <div class="dc-pro-con-col">
+            <div class="dc-pro-con-label cons">Considerations</div>
+            ${cons || '<div class="dc-con-item">No data</div>'}
+          </div>
+        </div>
+      </div>
+
+      <div class="dc-reviews">
+        ${reviewStrip}
+        <button class="dc-rate-btn" onclick="dcOpenFeedback('${d.name.replace(/'/g,"\\'")}')">
+          <i class="ti ti-star" style="font-size:12px;vertical-align:-1px;margin-right:3px;" aria-hidden="true"></i>
+          Rate this drug
+        </button>
+      </div>
+    </div>`;
+}
+
+// ── Feedback flow ─────────────────────────────
+function dcOpenFeedback(drugName) {
+  dcFeedbackDrug = drugName;
+  dcFeedbackStar = 0;
+  dcFeedbackTags = [];
+  document.getElementById('dc-feedback-drug').textContent = drugName;
+  document.getElementById('dc-feedback-text').value = '';
+  document.querySelectorAll('.dc-star').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.dc-exp-tag').forEach(t => t.classList.remove('active'));
+  document.getElementById('dc-feedback-panel').style.display = 'block';
+  document.getElementById('dc-feedback-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function dcSetStar(n) {
+  dcFeedbackStar = n;
+  document.querySelectorAll('.dc-star').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.val) <= n);
+  });
+}
+
+function dcToggleTag(btn) {
+  btn.classList.toggle('active');
+  const tag = btn.textContent;
+  if (btn.classList.contains('active')) { if (!dcFeedbackTags.includes(tag)) dcFeedbackTags.push(tag); }
+  else dcFeedbackTags = dcFeedbackTags.filter(t => t !== tag);
+}
+
+async function dcSubmitFeedback() {
+  if (!dcFeedbackStar) { alert('Please select a star rating first.'); return; }
+  const drug = dcFeedbackDrug;
+  if (!dcUserRatings[drug]) dcUserRatings[drug] = { count: 0, total: 0, tags: [] };
+  dcUserRatings[drug].count++;
+  dcUserRatings[drug].total += dcFeedbackStar;
+  dcFeedbackTags.forEach(t => {
+    if (!dcUserRatings[drug].tags.includes(t)) dcUserRatings[drug].tags.push(t);
+  });
+  await saveDcRatings();
+  document.getElementById('dc-feedback-panel').style.display = 'none';
+  dcFeedbackStar = 0; dcFeedbackTags = []; dcFeedbackDrug = null;
+  dcApplyFilterSort(); // re-render with updated ratings
+  // Show confirmation
+  const area = document.getElementById('dc-cards-area');
+  const toast = document.createElement('div');
+  toast.style.cssText = 'background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:10px 14px;font-size:13px;color:#166534;margin-bottom:12px;';
+  toast.textContent = `✓ Rating submitted for ${drug}. Thank you!`;
+  area.prepend(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// ── Hook into renderResults ────────────────────
+// Called after renderResults processes analysis data
+function renderDrugPanelFromAnalysis(data) {
+  const topCondition = data.conditions && data.conditions[0];
+  if (!topCondition) return;
+  const drugs = data.drug_options || [];
+  renderDrugPanel(drugs, topCondition.name);
+}
+
+// ══════════════════════════════════════════════
+// ── VOICE MODULE ──
+// Speech Recognition (input) + Web Speech TTS (output)
+// ══════════════════════════════════════════════
+
+const VB = {
+  inputEnabled: false,
+  ttsEnabled: false,
+  recognition: null,
+  currentRecordingTarget: null,
+  currentMicBtn: null,
+  speaking: false,
+  speed: 1.0,
+  selectedVoice: null,
+  voices: [],
+  supported: {
+    recognition: !!(window.SpeechRecognition || window.webkitSpeechRecognition),
+    tts: !!window.speechSynthesis,
+  },
+};
+
+// ── Init ─────────────────────────────────────
+function vbInit() {
+  if (!VB.supported.recognition && !VB.supported.tts) {
+    document.getElementById('vb-status').textContent = 'Voice not supported in this browser';
+    return;
+  }
+  // Populate voice selector
+  if (VB.supported.tts) {
+    const loadVoices = () => {
+      VB.voices = window.speechSynthesis.getVoices().filter(v =>
+        v.lang.startsWith('en') || v.lang.startsWith('zh') || v.lang.startsWith('ms')
+      );
+      const sel = document.getElementById('vb-voice');
+      if (sel) {
+        sel.innerHTML = '<option value="">Default</option>' +
+          VB.voices.map((v, i) => `<option value="${i}">${v.name} (${v.lang})</option>`).join('');
+      }
+    };
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+  }
+  // Setup recognition
+  if (VB.supported.recognition) {
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    VB.recognition = new SpeechRec();
+    VB.recognition.continuous = false;
+    VB.recognition.interimResults = true;
+    VB.recognition.lang = 'en-GB';
+
+    VB.recognition.onresult = (e) => {
+      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+      const isFinal = e.results[e.results.length - 1].isFinal;
+      // Show interim in transcript strip
+      const stripId = 'transcript-' + VB.currentRecordingTarget;
+      const strip = document.getElementById(stripId);
+      if (strip) {
+        strip.style.display = 'flex';
+        const textEl = document.getElementById(stripId + '-text');
+        if (textEl) textEl.textContent = transcript;
+      }
+      if (isFinal) {
+        const target = document.getElementById(VB.currentRecordingTarget);
+        if (target) {
+          // Append to existing text if there's content
+          const existing = target.value.trim();
+          target.value = existing ? existing + ' ' + transcript : transcript;
+          target.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        vbStopRecording();
+        vbToast('✓ Voice captured');
+      }
+    };
+    VB.recognition.onerror = (e) => {
+      vbStopRecording();
+      if (e.error !== 'no-speech') vbToast('Voice error: ' + e.error);
+    };
+    VB.recognition.onend = () => { vbStopRecording(); };
+  }
+}
+
+// ── Voice bar toggles ─────────────────────────
+function vbToggleInput() {
+  if (!VB.supported.recognition) {
+    vbToast('Speech recognition not supported in this browser. Use Chrome or Edge.');
+    return;
+  }
+  VB.inputEnabled = !VB.inputEnabled;
+  const btn = document.getElementById('vb-input-toggle');
+  const lbl = document.getElementById('vb-input-label');
+  const ico = document.getElementById('vb-input-icon');
+  btn.classList.toggle('active', VB.inputEnabled);
+  lbl.textContent = VB.inputEnabled ? 'Voice input: On' : 'Voice input: Off';
+  ico.className = VB.inputEnabled ? 'ti ti-microphone-filled' : 'ti ti-microphone';
+  if (!VB.inputEnabled) vbStopRecording();
+  vbToast(VB.inputEnabled ? '🎤 Voice input enabled — tap any mic button to speak' : 'Voice input disabled');
+}
+
+function vbToggleTTS() {
+  if (!VB.supported.tts) {
+    vbToast('Text-to-speech not supported in this browser.');
+    return;
+  }
+  VB.ttsEnabled = !VB.ttsEnabled;
+  const btn = document.getElementById('vb-tts-toggle');
+  const lbl = document.getElementById('vb-tts-label');
+  const ico = document.getElementById('vb-tts-icon');
+  const speedWrap = document.getElementById('vb-speed-wrap');
+  btn.classList.toggle('active', VB.ttsEnabled);
+  lbl.textContent = VB.ttsEnabled ? 'Read aloud: On' : 'Read aloud: Off';
+  ico.className = VB.ttsEnabled ? 'ti ti-volume-filled' : 'ti ti-volume';
+  speedWrap.style.display = VB.ttsEnabled ? 'flex' : 'none';
+  speedWrap.style.alignItems = 'center';
+  speedWrap.style.gap = '6px';
+  if (!VB.ttsEnabled) vbStopSpeaking();
+  vbToast(VB.ttsEnabled ? '🔊 Read aloud enabled — responses will be spoken' : 'Read aloud disabled');
+}
+
+function vbSetSpeed(v) { VB.speed = parseFloat(v) || 1.0; }
+function vbSetVoice(v) {
+  VB.selectedVoice = v !== '' ? VB.voices[parseInt(v)] : null;
+}
+
+// ── Recording ─────────────────────────────────
+function vbStartRecording(targetId, btn) {
+  if (!VB.supported.recognition) {
+    vbToast('Speech recognition not supported. Please use Chrome or Edge on desktop.');
+    return;
+  }
+  if (!VB.inputEnabled) {
+    vbToast('Enable voice input first using the Voice bar above.');
+    return;
+  }
+  // Stop any existing recording
+  if (VB.currentRecordingTarget) vbStopRecording();
+
+  VB.currentRecordingTarget = targetId;
+  VB.currentMicBtn = btn;
+  btn.classList.add('recording');
+  btn.innerHTML = '<i class="ti ti-microphone-filled"></i> Listening…';
+
+  // Show transcript strip
+  const stripId = 'transcript-' + targetId;
+  const strip = document.getElementById(stripId);
+  if (strip) {
+    strip.style.display = 'flex';
+    const textEl = document.getElementById(stripId + '-text');
+    if (textEl) textEl.textContent = 'Listening…';
+  }
+
+  document.getElementById('vb-status').textContent = '🔴 Recording…';
+
+  try { VB.recognition.start(); }
+  catch(e) {
+    // Already started — abort and restart
+    VB.recognition.abort();
+    setTimeout(() => { try { VB.recognition.start(); } catch(e2) {} }, 300);
+  }
+}
+
+function vbStopRecording() {
+  if (VB.recognition) { try { VB.recognition.stop(); } catch(e) {} }
+  if (VB.currentMicBtn) {
+    VB.currentMicBtn.classList.remove('recording');
+    // Restore mic button content
+    const wasInline = VB.currentMicBtn.classList.contains('mic-btn-inline');
+    VB.currentMicBtn.innerHTML = wasInline
+      ? '<i class="ti ti-microphone"></i> Speak'
+      : '<i class="ti ti-microphone"></i>';
+  }
+  VB.currentMicBtn = null;
+  VB.currentRecordingTarget = null;
+  document.getElementById('vb-status').textContent = '';
+}
+
+// ── TTS ────────────────────────────────────────
+function vbSpeak(text) {
+  if (!VB.supported.tts) { vbToast('Text-to-speech not supported in this browser.'); return; }
+  if (!VB.ttsEnabled) {
+    // Allow manual speak even if auto is off
+    vbDoSpeak(text);
+    return;
+  }
+  vbDoSpeak(text);
+}
+
+function vbDoSpeak(text) {
+  if (!text || !text.trim()) return;
+  vbStopSpeaking();
+  // Clean text — strip HTML tags, ICD codes, markdown
+  const clean = text.replace(/<[^>]+>/g,'').replace(/[A-Z]\d+(\.\d+)*/g,'').replace(/\s+/g,' ').trim();
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.rate = VB.speed;
+  utt.pitch = 1.0;
+  if (VB.selectedVoice) utt.voice = VB.selectedVoice;
+  utt.onstart = () => {
+    VB.speaking = true;
+    document.getElementById('vb-stop-btn').style.display = 'flex';
+    document.getElementById('vb-status').textContent = '🔊 Speaking…';
+  };
+  utt.onend = utt.onerror = () => {
+    VB.speaking = false;
+    document.getElementById('vb-stop-btn').style.display = 'none';
+    document.getElementById('vb-status').textContent = '';
+  };
+  window.speechSynthesis.speak(utt);
+}
+
+function vbStopSpeaking() {
+  if (VB.supported.tts) window.speechSynthesis.cancel();
+  VB.speaking = false;
+  const stopBtn = document.getElementById('vb-stop-btn');
+  if (stopBtn) stopBtn.style.display = 'none';
+  const status = document.getElementById('vb-status');
+  if (status) status.textContent = '';
+}
+
+// ── Auto-read results if TTS is on ────────────
+function vbAutoReadResults(data) {
+  if (!VB.ttsEnabled || !VB.supported.tts) return;
+  const top = data.conditions && data.conditions[0];
+  const parts = [
+    data.urgency_message || '',
+    top ? `Most likely condition: ${top.name}. ${top.summary || ''}` : '',
+    data.key_advice || '',
+  ].filter(Boolean).join('. ');
+  setTimeout(() => vbDoSpeak(parts), 600);
+}
+
+// ── Quiz feedback auto-read ───────────────────
+function vbAutoReadFeedback(text) {
+  if (!VB.ttsEnabled || !VB.supported.tts) return;
+  setTimeout(() => vbDoSpeak(text), 300);
+}
+
+// ── Toast ─────────────────────────────────────
+let vbToastTimer = null;
+function vbToast(msg) {
+  let t = document.getElementById('vb-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'vb-toast';
+    t.className = 'voice-toast';
+    document.body.appendChild(t);
+  }
+  t.innerHTML = `<i class="ti ti-microphone" aria-hidden="true"></i> ${msg}`;
+  t.style.display = 'flex';
+  clearTimeout(vbToastTimer);
+  vbToastTimer = setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+// ── Initialise on load ────────────────────────
+document.addEventListener('DOMContentLoaded', vbInit);
+// Fallback if DOM already loaded
+if (document.readyState !== 'loading') vbInit();
+
+</script>
+</body>
+</html>
